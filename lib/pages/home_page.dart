@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/components/regulator_device_list_tile.dart';
 import 'package:flutter_test_app/components/window_title_bar.dart';
 import 'package:flutter_test_app/components/app_drawer.dart';
-import 'package:flutter_test_app/dialogs/access_token_dialog.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -16,46 +15,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int _counter = 0;
+  List<ListTile> _getItems() {
+    List<String> names = List.from(['Omega-7891', 'Omega-8f79']);
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    return names
+        .map((name) => RegulatorDeviceListTile(
+              name: name,
+            ))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: AppDrawer(context: context),
+      drawer: AppDrawer(scaffoldKey: _scaffoldKey, context: context),
       body: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               WindowTitleBar(scaffoldKey: _scaffoldKey),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              TextButton(
-                child: const Text('Test'),
-                onPressed: () => {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AccessTokenDialog(context: context, titleText: 'Create access token');
-                    },
-                  )
-                },
-              )
+              Expanded(
+                  child: ListView(
+                children: _getItems(),
+              )),
             ],
           )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
