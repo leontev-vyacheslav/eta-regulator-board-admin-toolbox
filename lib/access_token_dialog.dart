@@ -40,9 +40,9 @@ class AccessTokenDialog extends AlertDialog {
       ];
 
   @override
-  Widget get content => SizedBox(
-        width: MediaQuery.of(context).size.width * 0.4,
-        child: const Column(
+  Widget get content => const SizedBox(
+        width: 460,
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [Text('Custom Content')],
         ),
