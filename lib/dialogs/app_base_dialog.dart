@@ -4,13 +4,13 @@ class AppBaseDialog extends AlertDialog {
   final BuildContext context;
   final String titleText;
 
-  const AppBaseDialog({required this.context, required this.titleText, super.key});
+  const AppBaseDialog({required this.context, required this.titleText, super.key, super.actions, super.content});
 
   @override
   EdgeInsetsGeometry? get titlePadding => const EdgeInsets.fromLTRB(20, 15, 20, 15);
 
   @override
-  get shape => const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)));
+  get shape => const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)));
 
   @override
   Widget get title => Row(

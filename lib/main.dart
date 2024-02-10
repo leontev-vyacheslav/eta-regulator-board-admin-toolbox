@@ -19,5 +19,7 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
+
+  await App.initAsync();
   runApp(const App());
 }

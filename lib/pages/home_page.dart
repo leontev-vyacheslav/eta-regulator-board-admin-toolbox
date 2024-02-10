@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/app.dart';
 import 'package:flutter_test_app/components/regulator_device_list_tile.dart';
-import 'package:flutter_test_app/components/window_title_bar.dart';
+import 'package:flutter_test_app/components/app_title_bar.dart';
 import 'package:flutter_test_app/components/app_drawer.dart';
+
+import '../models/regulator_device_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -15,14 +20,23 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<ListTile> _getItems() {
-    List<String> names = List.from(['Omega-7891', 'Omega-8f79']);
+  List<ListTile> _getListItems(BuildContext context) {
+    String? jsonText = App.localStorage?.getString('devices');
 
-    return names
-        .map((name) => RegulatorDeviceListTile(
-              name: name,
-            ))
-        .toList();
+    if (jsonText != null) {
+      List<dynamic> devicesMapList = jsonDecode(jsonText);
+
+      List<RegulatorDeviceModel> devices = devicesMapList.map((e) => RegulatorDeviceModel.fromJson(e)).toList();
+
+      return devices
+          .map((device) => RegulatorDeviceListTile(
+                context: context,
+                device: device,
+              ))
+          .toList();
+    }
+
+    return List.empty();
   }
 
   @override
@@ -34,10 +48,10 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              WindowTitleBar(scaffoldKey: _scaffoldKey),
+              AppTitleBar(scaffoldKey: _scaffoldKey),
               Expanded(
                   child: ListView(
-                children: _getItems(),
+                children: _getListItems(context),
               )),
             ],
           )),

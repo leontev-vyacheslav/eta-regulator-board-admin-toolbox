@@ -1,22 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/dialogs/access_token_dialog.dart';
+
+import '../models/regulator_device_model.dart';
 
 class RegulatorDeviceListTile extends ListTile {
-  final String name;
+  final RegulatorDeviceModel device;
+  final BuildContext context;
 
-  const RegulatorDeviceListTile({required this.name, super.key});
+  const RegulatorDeviceListTile({required this.context, required this.device, super.key});
 
   @override
   Widget? get leading => const Icon(Icons.devices);
 
   @override
-  Widget? get title => Text(name);
+  Widget? get title => Text(device.name);
+
+  @override
+  GestureTapCallback? get onTap => () {
+        debugPrint(device.id);
+      };
+
+  @override
+  VisualDensity? get visualDensity => const VisualDensity(vertical: 2);
 
   @override
   Widget? get trailing => PopupMenuButton(
         itemBuilder: (context) {
           return [
-            const PopupMenuItem(
-              child: Row(children: [
+            PopupMenuItem(
+              onTap: () {
+                //
+              },
+              child: const Row(children: [
                 Icon(Icons.edit),
                 SizedBox(
                   width: 10,
@@ -24,21 +39,33 @@ class RegulatorDeviceListTile extends ListTile {
                 Text('Edit device')
               ]),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
+                onTap: () {},
                 height: 1,
-                child: Divider(
+                child: const Divider(
                   height: 1,
                   thickness: 1,
                 )),
-            const PopupMenuItem(
-                child: Row(children: [
-              Icon(Icons.key),
-              SizedBox(
-                width: 10,
-              ),
-              Text('Create access token')
-            ])),
+            PopupMenuItem(
+                onTap: () {
+                  _showAccessTokenDialog();
+                },
+                child: const Row(children: [
+                  Icon(Icons.key),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Create access token')
+                ])),
           ];
         },
       );
+
+  void _showAccessTokenDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AccessTokenDialog( context: context, titleText: 'Create access token', device: device,);
+        });
+  }
 }
