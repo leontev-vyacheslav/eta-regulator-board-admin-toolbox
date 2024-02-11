@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_test_app/app.dart';
 import 'package:flutter_test_app/components/app_drawer_header.dart';
 import 'package:flutter_test_app/dialogs/about_dialog.dart' as about_dialog;
 import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
@@ -37,7 +38,7 @@ class AppDrawer extends Drawer {
             thickness: 1,
           ),
           ListTile(
-            leading: const Icon(Icons.home),
+            leading: const Icon(Icons.app_registration),
             title: const Text('About'),
             visualDensity: const VisualDensity(vertical: 2),
             onTap: () {
@@ -52,6 +53,13 @@ class AppDrawer extends Drawer {
           const Divider(
             height: 1,
             thickness: 1,
+          ),
+          ListTile(
+            leading: Icon(App.of(context).themeMode == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
+            title: Text(App.of(context).themeMode == ThemeMode.dark ? 'Light theme' : 'Dark theme'),
+            onTap: () {
+              App.of(context).toggleTheme();
+            },
           ),
           ListTile(
             leading: const Icon(Icons.exit_to_app),

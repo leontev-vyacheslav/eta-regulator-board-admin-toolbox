@@ -16,7 +16,11 @@ class AppBaseDialog extends AlertDialog {
   Widget get title => Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Expanded(child: Text(titleText)),
+          Expanded(
+              child: Text(
+            titleText,
+            style: const TextStyle(fontSize: 22),
+          )),
           IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
