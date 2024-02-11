@@ -3,10 +3,7 @@ import 'package:flutter_test_app/pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatefulWidget {
-class App extends StatefulWidget {
   static SharedPreferences? localStorage;
-
-  const App({super.key});
 
   const App({super.key});
 
