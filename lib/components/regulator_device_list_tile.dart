@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/dialogs/access_token_dialog.dart';
-import 'package:flutter_test_app/dialogs/regulator_device_dialog.dart';
+import 'package:flutter_test_app/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 
 import '../models/regulator_device_model.dart';
 
@@ -77,6 +77,7 @@ class RegulatorDeviceListTile extends ListTile {
   void _showRegulatorVDeviceDialog() {
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return RegulatorDeviceDialog(
             context: context,
