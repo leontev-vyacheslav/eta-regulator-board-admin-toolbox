@@ -21,5 +21,6 @@ void main() async {
   });
 
   await App.initAsync();
+  
   runApp(const App());
 }

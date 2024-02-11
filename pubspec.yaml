@@ -12,7 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
   window_manager: ^0.3.8
-  cupertino_icons: ^1.0.2
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.2
 

@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
 import 'package:flutter_test_app/models/regulator_device_model.dart';
 
-// ignore: must_be_immutable
-class AccessTokenDialog extends AppBaseDialog {
-  late TextEditingController? _accessTokenEditingController;
+class RegulatorDeviceDialog extends AppBaseDialog {
   final RegulatorDeviceModel device;
 
-  AccessTokenDialog({super.key, required super.context, required super.titleText, required this.device}) : super() {
-    _accessTokenEditingController = TextEditingController(text: device.name);
-  }
+  const RegulatorDeviceDialog({super.key, required super.context, required super.titleText, required this.device});
 
   @override
   List<Widget> get actions => [
@@ -34,21 +30,27 @@ class AccessTokenDialog extends AppBaseDialog {
       ];
 
   @override
-  Widget get content => SizedBox(
+  Widget? get content => const SizedBox(
       width: 640,
-      child: Wrap(runSpacing: 20, children: [
-        TextField(
-          controller: _accessTokenEditingController,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: 'Access token',
-            suffixIcon: IconButton(
-              onPressed: () {
-                _accessTokenEditingController!.clear();
-              },
-              icon: const Icon(Icons.key),
+      child: Wrap(
+        runSpacing: 20,
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Device name',
             ),
           ),
-        ),
-      ]));
+          TextField(
+              decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'MAC address',
+          )),
+          TextField(
+              decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'Master key',
+          )),
+        ],
+      ));
 }

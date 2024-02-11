@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/dialogs/access_token_dialog.dart';
+import 'package:flutter_test_app/dialogs/regulator_device_dialog.dart';
 
 import '../models/regulator_device_model.dart';
 
@@ -29,7 +30,7 @@ class RegulatorDeviceListTile extends ListTile {
           return [
             PopupMenuItem(
               onTap: () {
-                //
+                _showRegulatorVDeviceDialog();
               },
               child: const Row(children: [
                 Icon(Icons.edit),
@@ -65,7 +66,23 @@ class RegulatorDeviceListTile extends ListTile {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AccessTokenDialog( context: context, titleText: 'Create access token', device: device,);
+          return AccessTokenDialog(
+            context: context,
+            titleText: 'Create access token',
+            device: device,
+          );
+        });
+  }
+
+  void _showRegulatorVDeviceDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return RegulatorDeviceDialog(
+            context: context,
+            titleText: 'Edit device',
+            device: device,
+          );
         });
   }
 }
