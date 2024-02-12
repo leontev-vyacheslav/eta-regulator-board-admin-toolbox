@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/components/window_drag_area.dart';
+import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:window_manager/window_manager.dart';
+
+import '../constants/app_colors.dart';
 
 class AppTitleBar extends Row {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -20,7 +23,8 @@ class AppTitleBar extends Row {
                   scaffoldKey.currentState!.openDrawer();
                 }),
             const Expanded(
-              child: Text("ETA Regulator Board Admin", textAlign: TextAlign.center, style: TextStyle(color: Color.fromRGBO(0xff, 0x57, 0x22, 1), fontSize: 24)),
+              child: Text(AppStrings.appTitle,
+                  textAlign: TextAlign.center, style: TextStyle(color: AppColors.textAccent, fontSize: 24)),
             ),
             IconButton(
                 iconSize: 32,

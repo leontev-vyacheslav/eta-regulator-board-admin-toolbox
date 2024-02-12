@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/constants/app_colors.dart';
+import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
 
 class AboutDialog extends AppBaseDialog {
@@ -7,7 +9,7 @@ class AboutDialog extends AppBaseDialog {
   @override
   List<Widget> get actions => [
         ElevatedButton.icon(
-          label: const Text('CLOSE'),
+          label: const Text(AppStrings.buttonClose),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -27,8 +29,8 @@ class AboutDialog extends AppBaseDialog {
             Image.asset('assets/images/icon.ico'),
             const SizedBox(width: 20),
             const Text(
-              'ETA Regulator Board Admin v.0.01',
-              style: TextStyle(color: Color.fromRGBO(0xff, 0x57, 0x22, 1)),
+              '${AppStrings.appTitle} ${AppStrings.appVersion}',
+              style: TextStyle(color: AppColors.textAccent),
             )
           ],
         ),

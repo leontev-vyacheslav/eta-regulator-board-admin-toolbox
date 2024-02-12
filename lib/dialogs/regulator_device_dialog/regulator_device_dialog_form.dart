@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_app/models/regulator_device_model.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-class RegulatorDeviceDialogForm extends SizedBox {
+class RegulatorDeviceDialogForm extends Form {
   final RegulatorDeviceModel? device;
 
-  const RegulatorDeviceDialogForm({super.key, this.device});
+  RegulatorDeviceDialogForm({super.key, this.device}) : super(child: Container());
 
   @override
-  double? get width => 640;
-
-  @override
-  Widget? get child => Wrap(
+  Widget get child => SizedBox(
+      width: 640,
+      child: Wrap(
         runSpacing: 20,
         children: [
           TextFormField(
               initialValue: device?.id,
+              onSaved: (currentId) {
+                if (currentId != null) {
+                  device!.id = currentId;
+                }
+              },
               readOnly: device != null,
+              onChanged: (value) {},
               decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   labelText: 'Id',
@@ -27,6 +32,11 @@ class RegulatorDeviceDialogForm extends SizedBox {
                   ))),
           TextFormField(
             initialValue: device?.name,
+            onSaved: (currentName) {
+              if (currentName != null) {
+                device!.name = currentName;
+              }
+            },
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Device name',
@@ -34,8 +44,14 @@ class RegulatorDeviceDialogForm extends SizedBox {
           ),
           TextFormField(
             initialValue: device?.macAddress,
+            onSaved: (currentMacAddress) {
+              if (currentMacAddress != null) {
+                device!.macAddress = currentMacAddress;
+              }
+            },
             inputFormatters: [
-              MaskTextInputFormatter(mask: '##:##:##:##:##:##', filter: {"#": RegExp(r'[0-9a-fA-F]')}, type: MaskAutoCompletionType.lazy)
+              MaskTextInputFormatter(
+                  mask: '##:##:##:##:##:##', filter: {"#": RegExp(r'[0-9a-fA-F]')}, type: MaskAutoCompletionType.lazy)
             ],
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -44,6 +60,11 @@ class RegulatorDeviceDialogForm extends SizedBox {
           ),
           TextFormField(
               initialValue: device?.masterKey,
+              onSaved: (currentMasterKey) {
+                if (currentMasterKey != null) {
+                  device!.masterKey = currentMasterKey;
+                }
+              },
               decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   labelText: 'Master key',
@@ -53,5 +74,5 @@ class RegulatorDeviceDialogForm extends SizedBox {
                     icon: const Icon(Icons.refresh),
                   ))),
         ],
-      );
+      ));
 }

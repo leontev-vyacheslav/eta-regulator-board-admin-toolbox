@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test_app/app.dart';
 import 'package:flutter_test_app/components/app_drawer_header.dart';
+import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:flutter_test_app/dialogs/about_dialog.dart' as about_dialog;
 import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
 import 'package:window_manager/window_manager.dart';
@@ -21,31 +22,27 @@ class AppDrawer extends Drawer {
           AppDrawerHeader(scaffoldKey: scaffoldKey),
           ListTile(
               leading: const Icon(Icons.download),
-              title: const Text('Download'),
+              title: const Text(AppStrings.menuDownload),
               visualDensity: const VisualDensity(vertical: 2),
-              onTap: () {
-                debugPrint('Download');
-              }),
+              onTap: () {}),
           ListTile(
               leading: const Icon(Icons.upload),
-              title: const Text('Upload'),
+              title: const Text(AppStrings.menuUpload),
               visualDensity: const VisualDensity(vertical: 2),
-              onTap: () {
-                debugPrint('Upload');
-              }),
+              onTap: () {}),
           const Divider(
             height: 1,
             thickness: 1,
           ),
           ListTile(
             leading: const Icon(Icons.app_registration),
-            title: const Text('About'),
+            title: const Text(AppStrings.menuAbout),
             visualDensity: const VisualDensity(vertical: 2),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return about_dialog.AboutDialog(context: context, titleText: 'About');
+                  return about_dialog.AboutDialog(context: context, titleText: AppStrings.menuAbout);
                 },
               );
             },
@@ -55,7 +52,8 @@ class AppDrawer extends Drawer {
             thickness: 1,
           ),
           ListTile(
-            leading: Icon(App.of(context).themeMode == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
+            leading: Icon(
+                App.of(context).themeMode == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
             title: Text(App.of(context).themeMode == ThemeMode.dark ? 'Light theme' : 'Dark theme'),
             onTap: () {
               App.of(context).toggleTheme();
@@ -63,7 +61,7 @@ class AppDrawer extends Drawer {
           ),
           ListTile(
             leading: const Icon(Icons.exit_to_app),
-            title: const Text('Exit'),
+            title: const Text(AppStrings.menuExit),
             visualDensity: const VisualDensity(vertical: 2),
             onTap: () async {
               showDialog(
@@ -84,7 +82,7 @@ class AppDrawer extends Drawer {
                                 SystemNavigator.pop();
                               }
                             },
-                            child: const Text('OK')),
+                            child: const Text(AppStrings.buttonOk)),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -92,9 +90,9 @@ class AppDrawer extends Drawer {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text('CANCEL'))
+                            child: const Text(AppStrings.buttonCancel))
                       ],
-                      content: const SizedBox(width: 480, child: Text('Do you really want to exit app?')),
+                      content: const SizedBox(width: 480, child: Text(AppStrings.appTitle)),
                     );
                   });
             },

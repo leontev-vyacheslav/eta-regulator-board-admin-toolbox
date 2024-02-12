@@ -1,8 +1,11 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:flutter_test_app/dialogs/access_token_dialog.dart';
 import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
 import 'package:flutter_test_app/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
@@ -36,18 +39,6 @@ class RegulatorDeviceListTile extends ListTile {
           return [
             PopupMenuItem(
               onTap: () {
-                _showDeviceQrCode();
-              },
-              child: const Row(children: [
-                Icon(Icons.qr_code),
-                SizedBox(
-                  width: 10,
-                ),
-                Text('Device ID QR-code')
-              ]),
-            ),
-            PopupMenuItem(
-              onTap: () {
                 _showRegulatorVDeviceDialog();
               },
               child: const Row(children: [
@@ -55,7 +46,19 @@ class RegulatorDeviceListTile extends ListTile {
                 SizedBox(
                   width: 10,
                 ),
-                Text('Edit device')
+                Text(AppStrings.menuEditDevice)
+              ]),
+            ),
+            PopupMenuItem(
+              onTap: () {
+                _showDeviceQrCode();
+              },
+              child: const Row(children: [
+                Icon(Icons.qr_code),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(AppStrings.menuQRCodeId)
               ]),
             ),
             PopupMenuItem(
@@ -74,7 +77,7 @@ class RegulatorDeviceListTile extends ListTile {
                   SizedBox(
                     width: 10,
                   ),
-                  Text('Create access token')
+                  Text(AppStrings.menuCreateAccessToken)
                 ])),
           ];
         },
@@ -86,7 +89,7 @@ class RegulatorDeviceListTile extends ListTile {
         builder: (BuildContext context) {
           return AccessTokenDialog(
             context: context,
-            titleText: 'Create access token',
+            titleText: AppStrings.dialogTitleAccessToken,
             device: device,
           );
         });
@@ -99,7 +102,7 @@ class RegulatorDeviceListTile extends ListTile {
         builder: (BuildContext context) {
           return RegulatorDeviceDialog(
             context: context,
-            titleText: 'Edit device',
+            titleText: AppStrings.dialogTitleEditDevice,
             device: device,
           );
         });

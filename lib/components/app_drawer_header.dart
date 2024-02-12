@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/constants/app_colors.dart';
+import 'package:flutter_test_app/constants/app_strings.dart';
 
 class AppDrawerHeader extends SizedBox {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -17,7 +19,7 @@ class AppDrawerHeader extends SizedBox {
             const SizedBox(
               width: 20,
             ),
-            const Expanded(child: Text('ETA24™', style: TextStyle(color: Color.fromRGBO(0xff, 0x57, 0x22, 1)))),
+            const Expanded(child: Text(AppStrings.companyTradeMark, style: TextStyle(color: AppColors.textAccent))),
             IconButton(
                 onPressed: () {
                   scaffoldKey.currentState!.closeDrawer();
