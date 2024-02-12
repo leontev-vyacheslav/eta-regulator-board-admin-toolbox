@@ -1,5 +1,3 @@
-// ignore_for_file: unused_import
-
 import 'dart:io';
 import 'dart:ui';
 
@@ -7,81 +5,67 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:flutter_test_app/dialogs/access_token_dialog.dart';
-import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
 import 'package:flutter_test_app/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
+import 'package:flutter_test_app/models/regulator_device_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../models/regulator_device_model.dart';
-
-class RegulatorDeviceListTile extends ListTile {
+class RegulatorDeviceListTileMenu extends StatelessWidget {
   final RegulatorDeviceModel device;
   final BuildContext context;
 
-  const RegulatorDeviceListTile({required this.context, required this.device, super.key});
+  const RegulatorDeviceListTileMenu({super.key, required this.device, required this.context});
 
   @override
-  Widget? get leading => const Icon(Icons.devices);
-
-  @override
-  Widget? get title => Text(device.name);
-
-  @override
-  GestureTapCallback? get onTap => () {
-        debugPrint(device.id);
-      };
-
-  @override
-  VisualDensity? get visualDensity => const VisualDensity(vertical: 2);
-
-  @override
-  Widget? get trailing => PopupMenuButton(
-        itemBuilder: (context) {
-          return [
-            PopupMenuItem(
-              onTap: () {
-                _showRegulatorVDeviceDialog();
-              },
-              child: const Row(children: [
-                Icon(Icons.edit),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuEditDevice)
-              ]),
-            ),
-            PopupMenuItem(
-              onTap: () {
-                _showDeviceQrCode();
-              },
-              child: const Row(children: [
-                Icon(Icons.qr_code),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuQRCodeId)
-              ]),
-            ),
-            PopupMenuItem(
-                onTap: () {},
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem(
+            onTap: () {
+              _showRegulatorVDeviceDialog();
+            },
+            child: const Row(children: [
+              Icon(Icons.edit),
+              SizedBox(
+                width: 10,
+              ),
+              Text(AppStrings.menuEditDevice)
+            ]),
+          ),
+          PopupMenuItem(
+            onTap: () {
+              _showDeviceQrCode();
+            },
+            child: const Row(children: [
+              Icon(Icons.qr_code),
+              SizedBox(
+                width: 10,
+              ),
+              Text(AppStrings.menuQRCodeId)
+            ]),
+          ),
+          PopupMenuItem(
+              onTap: () {},
+              height: 1,
+              child: const Divider(
                 height: 1,
-                child: const Divider(
-                  height: 1,
-                  thickness: 1,
-                )),
-            PopupMenuItem(
-                onTap: () {
-                  _showAccessTokenDialog();
-                },
-                child: const Row(children: [
-                  Icon(Icons.key),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(AppStrings.menuCreateAccessToken)
-                ])),
-          ];
-        },
-      );
+                thickness: 1,
+              )),
+          PopupMenuItem(
+              onTap: () {
+                _showAccessTokenDialog();
+              },
+              child: const Row(children: [
+                Icon(Icons.key),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(AppStrings.menuCreateAccessToken)
+              ])),
+        ];
+      },
+    );
+  }
 
   void _showAccessTokenDialog() {
     showDialog(

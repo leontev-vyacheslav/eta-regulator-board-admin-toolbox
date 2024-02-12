@@ -50,7 +50,7 @@ class AppState extends State<App> {
       title: AppStrings.appTitle,
       themeMode: _themeMode,
       theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      darkTheme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark)),
       home: const HomePage(title: AppStrings.appTitle),
       debugShowCheckedModeBanner: false,
     );

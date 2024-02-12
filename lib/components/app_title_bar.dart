@@ -5,13 +5,15 @@ import 'package:window_manager/window_manager.dart';
 
 import '../constants/app_colors.dart';
 
-class AppTitleBar extends Row {
+class AppTitleBar extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const AppTitleBar({required this.scaffoldKey, super.key});
 
   @override
-  List<Widget> get children => [
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
         Expanded(
             child: WindowDragArea(
           maximizable: true,
@@ -33,6 +35,8 @@ class AppTitleBar extends Row {
                   await windowManager.close();
                 }),
           ]),
-        )),
-      ];
+        ))
+      ],
+    );
+  }
 }

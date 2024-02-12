@@ -28,7 +28,10 @@ class RegulatorDeviceDialog extends AppBaseDialog {
             if (!context.mounted) {
               return;
             }
-            Navigator.pop(context);
+            Navigator.popAndPushNamed(
+              context,
+              '/',
+            );
           },
           style: ElevatedButton.styleFrom(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),

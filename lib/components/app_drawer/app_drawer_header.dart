@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_app/constants/app_colors.dart';
 import 'package:flutter_test_app/constants/app_strings.dart';
 
-class AppDrawerHeader extends SizedBox {
+class AppDrawerHeader extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const AppDrawerHeader({required this.scaffoldKey, super.key});
 
   @override
-  double? get height => 96.0;
-
-  @override
-  Widget? get child => DrawerHeader(
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 96,
+      child: DrawerHeader(
         decoration: const BoxDecoration(),
         child: Row(
           children: [
@@ -27,5 +27,7 @@ class AppDrawerHeader extends SizedBox {
                 icon: const Icon(Icons.close))
           ],
         ),
-      );
+      ),
+    );
+  }
 }

@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test_app/app.dart';
-import 'package:flutter_test_app/components/app_drawer_header.dart';
+import 'package:flutter_test_app/components/app_drawer/app_drawer_header.dart';
 import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:flutter_test_app/dialogs/about_dialog.dart' as about_dialog;
 import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
