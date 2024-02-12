@@ -24,6 +24,26 @@ class AppState extends State<App> {
     super.initState();
   }
 
+  ThemeMode get themeMode => _themeMode;
+
+  set themeMode(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
+  SharedPreferences get localStorage => widget.localStorage;
+
+  void toggleTheme() {
+    if (themeMode == ThemeMode.dark) {
+      themeMode = ThemeMode.light;
+    } else {
+      themeMode = ThemeMode.dark;
+    }
+
+    localStorage.setString('theme', _themeMode.name);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,25 +54,5 @@ class AppState extends State<App> {
       home: const HomePage(title: AppStrings.appTitle),
       debugShowCheckedModeBanner: false,
     );
-  }
-
-  ThemeMode get themeMode => _themeMode;
-
-  SharedPreferences get localStorage => widget.localStorage;
-
-  set themeMode(ThemeMode themeMode) {
-    setState(() {
-      _themeMode = themeMode;
-    });
-  }
-
-  void toggleTheme() {
-    if (themeMode == ThemeMode.dark) {
-      themeMode = ThemeMode.light;
-    } else {
-      themeMode = ThemeMode.dark;
-    }
-
-    localStorage.setString('theme', _themeMode.name);
   }
 }

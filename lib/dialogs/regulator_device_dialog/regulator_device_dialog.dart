@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/app.dart';
 import 'package:flutter_test_app/constants/app_colors.dart';
 import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:flutter_test_app/data_access/regulator_device_repository.dart';

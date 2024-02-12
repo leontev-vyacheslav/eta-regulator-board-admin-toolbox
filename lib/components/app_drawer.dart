@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test_app/app.dart';
@@ -24,12 +25,16 @@ class AppDrawer extends Drawer {
               leading: const Icon(Icons.download),
               title: const Text(AppStrings.menuDownload),
               visualDensity: const VisualDensity(vertical: 2),
-              onTap: () {}),
+              onTap: () async {
+                await downloadDevices();
+              }),
           ListTile(
               leading: const Icon(Icons.upload),
               title: const Text(AppStrings.menuUpload),
               visualDensity: const VisualDensity(vertical: 2),
-              onTap: () {}),
+              onTap: () async {
+                await uploadDevices();
+              }),
           const Divider(
             height: 1,
             thickness: 1,
@@ -39,12 +44,7 @@ class AppDrawer extends Drawer {
             title: const Text(AppStrings.menuAbout),
             visualDensity: const VisualDensity(vertical: 2),
             onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return about_dialog.AboutDialog(context: context, titleText: AppStrings.menuAbout);
-                },
-              );
+              showAboutDialog();
             },
           ),
           const Divider(
@@ -64,39 +64,85 @@ class AppDrawer extends Drawer {
             title: const Text(AppStrings.menuExit),
             visualDensity: const VisualDensity(vertical: 2),
             onTap: () async {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AppBaseDialog(
-                      titleText: 'Confirm',
-                      context: context,
-                      actions: [
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                            ),
-                            onPressed: () async {
-                              if (Platform.isWindows || Platform.isLinux) {
-                                await windowManager.close();
-                              } else {
-                                SystemNavigator.pop();
-                              }
-                            },
-                            child: const Text(AppStrings.buttonOk)),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text(AppStrings.buttonCancel))
-                      ],
-                      content: const SizedBox(width: 480, child: Text(AppStrings.appTitle)),
-                    );
-                  });
+              showAppExitConfirmDialog();
             },
           ),
         ],
       );
+
+  Future<void> downloadDevices() async {
+    var outputFile = await FilePicker.platform
+        .saveFile(dialogTitle: 'Please select an output file:', fileName: 'devices.json', allowedExtensions: ['json']);
+
+    if (outputFile != null) {
+      var file = File(outputFile);
+      if (!context.mounted) {
+        return;
+      }
+      var jsonDevices = App.of(context).localStorage.getString('devices');
+      if (jsonDevices != null) {
+        await file.writeAsString(jsonDevices);
+      }
+    }
+  }
+
+  Future<void> uploadDevices() async {
+    var pickerResult = await FilePicker.platform
+        .pickFiles(dialogTitle: 'Please select a file:', allowedExtensions: ['json'], allowMultiple: false);
+
+    if (pickerResult != null && pickerResult.files.isNotEmpty) {
+      var file = File(pickerResult.files[0].path!);
+
+      var jsonDevices = await file.readAsString();
+
+      if (context.mounted) {
+        await App.of(context).localStorage.setString('devices', jsonDevices);
+        // ignore: use_build_context_synchronously
+        await Navigator.popAndPushNamed(context, '/');
+      }
+    }
+  }
+
+  void showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return about_dialog.AboutDialog(context: context, titleText: AppStrings.menuAbout);
+      },
+    );
+  }
+
+  void showAppExitConfirmDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AppBaseDialog(
+            titleText: 'Confirm',
+            context: context,
+            actions: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                  ),
+                  onPressed: () async {
+                    if (Platform.isWindows || Platform.isLinux) {
+                      await windowManager.close();
+                    } else {
+                      SystemNavigator.pop();
+                    }
+                  },
+                  child: const Text(AppStrings.buttonOk)),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(AppStrings.buttonCancel))
+            ],
+            content: const SizedBox(width: 480, child: Text(AppStrings.appTitle)),
+          );
+        });
+  }
 }
