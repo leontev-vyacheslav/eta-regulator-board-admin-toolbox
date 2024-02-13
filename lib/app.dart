@@ -35,11 +35,7 @@ class AppState extends State<App> {
   SharedPreferences get localStorage => widget.localStorage;
 
   void toggleTheme() {
-    if (themeMode == ThemeMode.dark) {
-      themeMode = ThemeMode.light;
-    } else {
-      themeMode = ThemeMode.dark;
-    }
+    themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
 
     localStorage.setString('theme', _themeMode.name);
   }

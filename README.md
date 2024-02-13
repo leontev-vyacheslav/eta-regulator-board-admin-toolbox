@@ -1,19 +1,4 @@
-# flutter_test_app
+# Images
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-
-https://pocketables.com/2022/01/how-to-format-that-wifi-qr-code-in-plain-text.html
+![alt text](./.assets/screen-1.png)
+![alt text](./.assets/screen-2.png)

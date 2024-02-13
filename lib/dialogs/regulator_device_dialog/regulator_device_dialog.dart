@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/constants/app_colors.dart';
 import 'package:flutter_test_app/constants/app_strings.dart';
-import 'package:flutter_test_app/data_access/regulator_device_repository.dart';
 import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
+import 'package:flutter_test_app/models/dialog_result.dart';
 import 'package:flutter_test_app/models/regulator_device_model.dart';
 
 import 'regulator_device_dialog_form.dart';
@@ -21,17 +21,11 @@ class RegulatorDeviceDialog extends AppBaseDialog {
             if (_formKey.currentState != null) {
               _formKey.currentState!.save();
             }
-            if (device != null) {
-              await RegulatorDeviceRepository(context).update(device!);
-            }
 
             if (!context.mounted) {
               return;
             }
-            Navigator.popAndPushNamed(
-              context,
-              '/',
-            );
+            Navigator.pop<DialogResult>(context, DialogResult(result: ModalResults.ok));
           },
           style: ElevatedButton.styleFrom(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -44,7 +38,7 @@ class RegulatorDeviceDialog extends AppBaseDialog {
         ElevatedButton.icon(
           label: const Text(AppStrings.buttonCancel),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop<DialogResult>(context, DialogResult(result: ModalResults.cancel));
           },
           style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
