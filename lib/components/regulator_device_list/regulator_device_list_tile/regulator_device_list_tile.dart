@@ -1,5 +1,5 @@
+import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile_menu.dart';
 
 import '../../../models/regulator_device_model.dart';
 

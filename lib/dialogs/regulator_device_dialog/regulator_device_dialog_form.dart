@@ -1,5 +1,5 @@
+import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/models/regulator_device_model.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class RegulatorDeviceDialogForm extends Form {

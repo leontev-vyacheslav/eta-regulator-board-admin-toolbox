@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
-import 'package:flutter_test_app/dialogs/access_token_dialog.dart';
-import 'package:flutter_test_app/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
-import 'package:flutter_test_app/models/dialog_result.dart';
-import 'package:flutter_test_app/models/regulator_device_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class RegulatorDeviceListTileMenu extends StatelessWidget {

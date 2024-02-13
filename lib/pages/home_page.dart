@@ -1,12 +1,13 @@
+import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer.dart';
+import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
+import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/components/app_title_bar.dart';
-import 'package:flutter_test_app/components/app_drawer/app_drawer.dart';
-import 'package:flutter_test_app/components/regulator_device_list/regulator_device_list.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
-import 'package:flutter_test_app/data_access/regulator_device_repository.dart';
-import 'package:flutter_test_app/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
-import 'package:flutter_test_app/models/dialog_result.dart';
-import 'package:flutter_test_app/models/regulator_device_model.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});

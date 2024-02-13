@@ -1,6 +1,6 @@
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
-import 'package:flutter_test_app/pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatefulWidget {

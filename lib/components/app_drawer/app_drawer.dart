@@ -1,13 +1,13 @@
 import 'dart:io';
 
+import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_test_app/app.dart';
-import 'package:flutter_test_app/components/app_drawer/app_drawer_header.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
-import 'package:flutter_test_app/dialogs/about_dialog.dart' as about_dialog;
-import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/app.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/about_dialog.dart' as about_dialog;
+import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppDrawer extends Drawer {

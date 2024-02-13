@@ -1,7 +1,8 @@
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
-import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
-import 'package:flutter_test_app/models/regulator_device_model.dart';
+
 
 // ignore: must_be_immutable
 class AccessTokenDialog extends AppBaseDialog {

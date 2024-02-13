@@ -1,7 +1,8 @@
+import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/constants/app_colors.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
-import 'package:flutter_test_app/dialogs/app_base_dialog.dart';
+
 
 class AboutDialog extends AppBaseDialog {
   const AboutDialog({super.key, required super.context, required super.titleText});

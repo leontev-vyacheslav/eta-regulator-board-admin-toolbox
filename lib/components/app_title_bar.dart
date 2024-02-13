@@ -1,6 +1,6 @@
+import 'package:eta_regulator_board_admin_toolbox/components/window_drag_area.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/components/window_drag_area.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../constants/app_colors.dart';

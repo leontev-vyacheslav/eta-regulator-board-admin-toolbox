@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/constants/app_colors.dart';
-import 'package:flutter_test_app/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 
 class AppDrawerHeader extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
