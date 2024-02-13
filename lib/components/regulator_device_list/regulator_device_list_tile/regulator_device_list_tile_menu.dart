@@ -94,8 +94,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
           );
         });
 
-    if (dialogResult?.result == ModalResults.ok) {
-
+    if (dialogResult?.result == ModalResults.ok && updateCallback != null) {
       updateCallback!(device);
     }
   }

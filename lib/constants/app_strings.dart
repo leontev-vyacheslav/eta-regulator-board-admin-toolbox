@@ -21,6 +21,8 @@ class AppStrings {
 
   static const menuExit = 'Exit';
 
+  static const menuAddDevice = 'Add device';
+
   static const menuEditDevice = 'Edit device';
 
   static const menuQRCodeId = 'Device ID QR-code';

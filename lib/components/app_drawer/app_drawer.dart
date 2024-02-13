@@ -141,7 +141,7 @@ class AppDrawer extends Drawer {
                   },
                   child: const Text(AppStrings.buttonCancel))
             ],
-            content: const SizedBox(width: 480, child: Text(AppStrings.appTitle)),
+            content: const SizedBox(width: 480, child: Text(AppStrings.confirmAppExit)),
           );
         });
   }

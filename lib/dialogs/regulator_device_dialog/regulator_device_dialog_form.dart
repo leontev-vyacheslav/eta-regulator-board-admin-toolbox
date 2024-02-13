@@ -21,7 +21,6 @@ class RegulatorDeviceDialogForm extends Form {
                 }
               },
               readOnly: device != null,
-              onChanged: (value) {},
               decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   labelText: 'Id',
