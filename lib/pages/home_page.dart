@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                         return [
                           PopupMenuItem(
                             onTap: () async {
-                              var dialogResult = await showDialog<DialogResult<RegulatorDeviceModel>>(
+                              var dialogResult = await showDialog<DialogResult<RegulatorDeviceModel?>>(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return RegulatorDeviceDialog(

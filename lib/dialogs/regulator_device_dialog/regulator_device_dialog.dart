@@ -16,7 +16,7 @@ class RegulatorDeviceDialog extends AppBaseDialog {
   @override
   List<Widget> get actions => [
         ElevatedButton.icon(
-          label: Text(device != null ? 'UPDATE' : 'CREATE'),
+          label: Text(device!.id.isNotEmpty ? 'UPDATE' : 'CREATE'),
           onPressed: () async {
             if (_formKey.currentState != null) {
               _formKey.currentState!.save();
@@ -25,7 +25,8 @@ class RegulatorDeviceDialog extends AppBaseDialog {
             if (!context.mounted) {
               return;
             }
-            Navigator.pop<DialogResult>(context, DialogResult<RegulatorDeviceModel>(result: ModalResults.ok, value: device));
+            Navigator.pop<DialogResult>(
+                context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.ok, value: device));
           },
           style: ElevatedButton.styleFrom(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -38,7 +39,8 @@ class RegulatorDeviceDialog extends AppBaseDialog {
         ElevatedButton.icon(
           label: const Text(AppStrings.buttonCancel),
           onPressed: () {
-            Navigator.pop<DialogResult>(context, DialogResult(result: ModalResults.cancel));
+            Navigator.pop<DialogResult<RegulatorDeviceModel?>>(
+                context, DialogResult(result: ModalResults.cancel, value: null));
           },
           style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
