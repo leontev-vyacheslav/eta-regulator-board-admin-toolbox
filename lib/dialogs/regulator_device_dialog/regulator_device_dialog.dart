@@ -5,7 +5,6 @@ import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/material.dart';
 
-
 import 'regulator_device_dialog_form.dart';
 
 class RegulatorDeviceDialog extends AppBaseDialog {
@@ -26,7 +25,7 @@ class RegulatorDeviceDialog extends AppBaseDialog {
             if (!context.mounted) {
               return;
             }
-            Navigator.pop<DialogResult>(context, DialogResult(result: ModalResults.ok));
+            Navigator.pop<DialogResult>(context, DialogResult<RegulatorDeviceModel>(result: ModalResults.ok, value: device));
           },
           style: ElevatedButton.styleFrom(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -50,7 +49,7 @@ class RegulatorDeviceDialog extends AppBaseDialog {
 
   @override
   Widget? get content => RegulatorDeviceDialogForm(
-        key: _formKey,
+        formKey: _formKey,
         device: device,
       );
 }

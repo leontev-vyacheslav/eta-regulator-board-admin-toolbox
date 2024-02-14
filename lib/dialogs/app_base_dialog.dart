@@ -1,3 +1,4 @@
+import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:flutter/material.dart';
 
 class AppBaseDialog extends AlertDialog {
@@ -27,7 +28,7 @@ class AppBaseDialog extends AlertDialog {
           IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop<DialogResult>(context, DialogResult(result: ModalResults.cancel));
               }),
         ],
       );

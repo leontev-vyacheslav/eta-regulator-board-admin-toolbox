@@ -23,13 +23,17 @@ class RegulatorDeviceRepository {
     return List.empty();
   }
 
+  Future<void> _save(List<RegulatorDeviceModel> devices) async {
+    var jsonText = jsonEncode(devices);
+
+    await App.of(context).localStorage.setString('devices', jsonText);
+  }
+
   Future<void> update(RegulatorDeviceModel device) async {
     var devices = getList();
     devices.removeWhere((e) => e.id == device.id);
     devices.add(device);
 
-    String jsonText = jsonEncode(devices);
-
-    await App.of(context).localStorage.setString('devices', jsonText);
+    await _save(devices);
   }
 }

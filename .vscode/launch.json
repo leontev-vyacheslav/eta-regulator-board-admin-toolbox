@@ -5,11 +5,9 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "debug-andoid",
+            "name": "debug",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug",
-            "flutterPlatform": "android-x64"
         },
         {
             "name": "profile",

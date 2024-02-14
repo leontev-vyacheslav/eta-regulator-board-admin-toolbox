@@ -21,9 +21,14 @@ class AppTitleBar extends StatelessWidget {
             onPressed: () async {
               scaffoldKey.currentState!.openDrawer();
             }),
-        const Expanded(
+        Expanded(
           child: Text(AppStrings.appTitle,
-              textAlign: TextAlign.center, style: TextStyle(color: AppColors.textAccent, fontSize: 16)),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppColors.textAccent,
+                fontSize: PlatformInfo.isDesktopOS ? 22 : 16,
+              )),
         ),
         PlatformInfo.isDesktopOS
             ? IconButton(

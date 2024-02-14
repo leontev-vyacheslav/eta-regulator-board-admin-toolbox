@@ -7,6 +7,7 @@ import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialo
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -38,8 +39,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _devices = RegulatorDeviceRepository(context).getList();
-
     super.initState();
+
+    FlutterNativeSplash.remove();
   }
 
   @override
@@ -51,7 +53,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(5),
           child: Column(
             children: [
-             AppTitleBar(scaffoldKey: _scaffoldKey),
+              AppTitleBar(scaffoldKey: _scaffoldKey),
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
                 child: Row(
@@ -65,17 +67,20 @@ class _HomePageState extends State<HomePage> {
                         return [
                           PopupMenuItem(
                             onTap: () async {
-                              var dialogResult = await showDialog<DialogResult>(
+                              var dialogResult = await showDialog<DialogResult<RegulatorDeviceModel>>(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return RegulatorDeviceDialog(
                                       context: context,
                                       titleText: AppStrings.dialogTitleEditDevice,
-                                      device: null,
+                                      device: RegulatorDeviceModel(
+                                          id: '', name: 'Omega-XXXX', macAddress: '00:00:00:00:00:00', masterKey: ''),
                                     );
                                   });
 
-                              if (dialogResult!.result == ModalResults.ok) {}
+                              if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
+                                update(dialogResult.value);
+                              }
                             },
                             child: const Row(children: [
                               Icon(Icons.add),
