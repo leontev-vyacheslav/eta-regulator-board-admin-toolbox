@@ -1,6 +1,7 @@
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
+import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
@@ -23,16 +24,19 @@ class _HomePageState extends State<HomePage> {
 
   List<RegulatorDeviceModel> _devices = List.empty(growable: true);
 
-  void update(RegulatorDeviceModel? device) async {
+  void update({RegulatorDeviceModel? device, required UpdateCallbackOperations operation}) async {
     var repository = RegulatorDeviceRepository(context);
+
     if (device != null) {
-      await repository.update(device);
+      if (operation == UpdateCallbackOperations.create || operation == UpdateCallbackOperations.update) {
+        await repository.update(device);
+      } else if (operation == UpdateCallbackOperations.remove) {
+        await repository.remove(device);
+      }
     }
 
     setState(() {
-      if (device != null) {
-        _devices = repository.getList();
-      }
+      _devices = repository.getList();
     });
   }
 
@@ -67,20 +71,26 @@ class _HomePageState extends State<HomePage> {
                         return [
                           PopupMenuItem(
                             onTap: () async {
-                              var dialogResult = await showDialog<DialogResult<RegulatorDeviceModel?>>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return RegulatorDeviceDialog(
-                                      context: context,
-                                      titleText: AppStrings.dialogTitleEditDevice,
-                                      device: RegulatorDeviceModel(
-                                          id: '', name: 'Omega-XXXX', macAddress: '00:00:00:00:00:00', masterKey: ''),
-                                    );
-                                  });
-
-                              if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
-                                update(dialogResult.value);
-                              }
+                              update(operation: UpdateCallbackOperations.refresh);
+                            },
+                            child: const Row(children: [
+                              Icon(Icons.refresh_outlined),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(AppStrings.menuRefresh)
+                            ]),
+                          ),
+                          PopupMenuItem(
+                              onTap: () {},
+                              height: 1,
+                              child: const Divider(
+                                height: 1,
+                                thickness: 1,
+                              )),
+                          PopupMenuItem(
+                            onTap: () async {
+                              await _showCreateRegulatorDialog();
                             },
                             child: const Row(children: [
                               Icon(Icons.add),
@@ -103,5 +113,21 @@ class _HomePageState extends State<HomePage> {
             ],
           )),
     );
+  }
+
+  Future<void> _showCreateRegulatorDialog() async {
+    var dialogResult = await showDialog<DialogResult<RegulatorDeviceModel?>>(
+        context: context,
+        builder: (BuildContext context) {
+          return RegulatorDeviceDialog(
+            context: context,
+            titleText: AppStrings.dialogTitleEditDevice,
+            device: RegulatorDeviceModel(id: '', name: 'Omega-XXXX', macAddress: '00:00:00:00:00:00', masterKey: ''),
+          );
+        });
+
+    if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
+      update(device: dialogResult.value, operation: UpdateCallbackOperations.create);
+    }
   }
 }

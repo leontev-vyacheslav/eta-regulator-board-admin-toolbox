@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -117,7 +121,13 @@ class _RegulatorDeviceDialogFormState extends State<RegulatorDeviceDialogForm> {
                         labelText: 'Master key',
                         suffix: IconButton(
                           style: const ButtonStyle(enableFeedback: false),
-                          onPressed: _createMode ? () {} : null,
+                          onPressed: _createMode
+                              ? () {
+                                  var random = Random.secure();
+                                  var bytes = Uint8List.fromList(List<int>.generate(32, (i) => random.nextInt(255)));
+                                  _masterKeyTextEditingController!.text = base64Encode(bytes);
+                                }
+                              : null,
                           icon: const Icon(Icons.refresh),
                         ))),
               ],

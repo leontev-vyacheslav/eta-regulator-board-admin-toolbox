@@ -30,13 +30,32 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
               await _showRegulatorDeviceDialog();
             },
             child: const Row(children: [
-              Icon(Icons.edit),
+              Icon(Icons.edit_outlined),
               SizedBox(
                 width: 10,
               ),
               Text(AppStrings.menuEditDevice)
             ]),
           ),
+          PopupMenuItem(
+            onTap: () async {
+              updateCallback!(device: device, operation: UpdateCallbackOperations.remove);
+            },
+            child: const Row(children: [
+              Icon(Icons.delete_outline),
+              SizedBox(
+                width: 10,
+              ),
+              Text(AppStrings.menuRemoveDevice)
+            ]),
+          ),
+          PopupMenuItem(
+              onTap: () {},
+              height: 1,
+              child: const Divider(
+                height: 1,
+                thickness: 1,
+              )),
           PopupMenuItem(
             onTap: () {
               _showDeviceQrCode();
@@ -97,7 +116,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
         });
 
     if (dialogResult?.result == ModalResults.ok && updateCallback != null) {
-      updateCallback!(device);
+      updateCallback!(device: device, operation: UpdateCallbackOperations.update);
     }
   }
 

@@ -36,4 +36,11 @@ class RegulatorDeviceRepository {
 
     await _save(devices);
   }
+
+  Future<void> remove(RegulatorDeviceModel device) async {
+    var devices = getList();
+    devices.removeWhere((e) => e.id == device.id);
+
+    await _save(devices);
+  }
 }

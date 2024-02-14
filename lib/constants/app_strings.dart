@@ -23,7 +23,11 @@ class AppStrings {
 
   static const menuAddDevice = 'Add device';
 
+  static const menuRefresh = 'Refresh';
+
   static const menuEditDevice = 'Edit device';
+
+  static const menuRemoveDevice = 'Remove device';
 
   static const menuQRCodeId = 'Device ID QR-code';
 

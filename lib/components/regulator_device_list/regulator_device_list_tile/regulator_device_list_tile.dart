@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../../models/regulator_device_model.dart';
 
-typedef UpdateCallbackFunction = void Function(RegulatorDeviceModel? device);
+enum UpdateCallbackOperations { create, update, remove, refresh }
+
+typedef UpdateCallbackFunction = void Function({RegulatorDeviceModel? device, required UpdateCallbackOperations operation});
 
 class RegulatorDeviceListTile extends ListTile {
   final RegulatorDeviceModel device;

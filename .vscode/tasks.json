@@ -1,0 +1,11 @@
+{
+    "tasks": [
+        {
+            "label": "emulator",
+            "type": "shell",
+            "command": "cd C:\\Users\\Leo\\AppData\\Local\\Android\\Sdk\\emulator;./emulator -avd Pixel_3a_API_34_extension_level_7_x86_64",
+            "group": "build",
+            "problemMatcher": [],
+        }
+    ]
+}

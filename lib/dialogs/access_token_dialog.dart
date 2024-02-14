@@ -4,6 +4,7 @@ import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.
 import 'package:flutter/material.dart';
 
 
+
 // ignore: must_be_immutable
 class AccessTokenDialog extends AppBaseDialog {
   late TextEditingController? _accessTokenEditingController;
@@ -49,6 +50,7 @@ class AccessTokenDialog extends AppBaseDialog {
             suffixIcon: IconButton(
               onPressed: () {
                 _accessTokenEditingController!.clear();
+
               },
               icon: const Icon(Icons.key),
             ),
