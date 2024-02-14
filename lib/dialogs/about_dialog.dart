@@ -3,7 +3,6 @@ import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:flutter/material.dart';
 
-
 class AboutDialog extends AppBaseDialog {
   const AboutDialog({super.key, required super.context, required super.titleText});
 
@@ -28,11 +27,14 @@ class AboutDialog extends AppBaseDialog {
           mainAxisSize: MainAxisSize.max,
           children: [
             Image.asset('assets/images/icon.ico'),
-            const SizedBox(width: 20),
-            const Text(
+            const SizedBox(width: 10),
+            const Flexible(
+                child: Text(
+              maxLines: 2,
+              overflow: TextOverflow.clip,
               '${AppStrings.appTitle} ${AppStrings.appVersion}',
               style: TextStyle(color: AppColors.textAccent),
-            )
+            ))
           ],
         ),
       );

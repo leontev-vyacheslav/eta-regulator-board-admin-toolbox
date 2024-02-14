@@ -1,6 +1,6 @@
 {
-    "name": "flutter_test_app",
-    "short_name": "flutter_test_app",
+    "name": "eta_regulator_board_admin_toolbox",
+    "short_name": "eta_regulator_board_admin_toolbox",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

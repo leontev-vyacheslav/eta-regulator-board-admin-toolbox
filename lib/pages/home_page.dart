@@ -8,7 +8,6 @@ import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/material.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -52,7 +51,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(5),
           child: Column(
             children: [
-              AppTitleBar(scaffoldKey: _scaffoldKey),
+             AppTitleBar(scaffoldKey: _scaffoldKey),
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
                 child: Row(
@@ -76,9 +75,7 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   });
 
-                                  if (dialogResult!.result == ModalResults.ok) {
-
-                                  }
+                              if (dialogResult!.result == ModalResults.ok) {}
                             },
                             child: const Row(children: [
                               Icon(Icons.add),

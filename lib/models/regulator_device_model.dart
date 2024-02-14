@@ -1,6 +1,6 @@
 // import 'dart:convert';
 
-// import 'package:flutter_test_app/app.dart';
+// import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'regulator_device_model.g.dart';

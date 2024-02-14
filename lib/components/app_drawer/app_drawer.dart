@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/about_dialog.dart' as about_dialog;
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppDrawer extends Drawer {
@@ -71,24 +73,30 @@ class AppDrawer extends Drawer {
       );
 
   Future<void> downloadDevices() async {
-    var outputFile = await FilePicker.platform
-        .saveFile(dialogTitle: 'Please select an output file:', fileName: 'devices.json', allowedExtensions: ['json']);
+    String? outputFile;
+    if (PlatformInfo.isDesktopOS) {
+      outputFile = await FilePicker.platform.saveFile(
+          dialogTitle: 'Please select an output file:', fileName: 'devices.json', allowedExtensions: ['json']);
+    } else if (Platform.isAndroid) {
+      var directory = Directory("/storage/emulated/0/Download");
+      outputFile = '${directory.path}/devices.json';
+    } else {
+      var directory = await getApplicationDocumentsDirectory();
+      outputFile = '${directory.path}/devices.json';
+    }
 
-    if (outputFile != null) {
-      var file = File(outputFile);
-      if (!context.mounted) {
-        return;
-      }
+    if (context.mounted) {
       var jsonDevices = App.of(context).localStorage.getString('devices');
-      if (jsonDevices != null) {
+      if (jsonDevices != null && outputFile != null) {
+        var file = File(outputFile);
         await file.writeAsString(jsonDevices);
       }
     }
   }
 
   Future<void> uploadDevices() async {
-    var pickerResult = await FilePicker.platform
-        .pickFiles(dialogTitle: 'Please select a file:', allowedExtensions: ['json'], allowMultiple: false);
+    var pickerResult = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Please select a file:', allowedExtensions: ['json'], allowMultiple: false, type: FileType.custom);
 
     if (pickerResult != null && pickerResult.files.isNotEmpty) {
       var file = File(pickerResult.files[0].path!);

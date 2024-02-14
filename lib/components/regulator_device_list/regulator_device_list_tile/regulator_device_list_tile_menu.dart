@@ -7,8 +7,10 @@ import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.da
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class RegulatorDeviceListTileMenu extends StatelessWidget {
@@ -114,12 +116,26 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
 
     var imageData = await painter.toImageData(1024, format: ImageByteFormat.png);
 
-    var outputFile = await FilePicker.platform.saveFile(
-        dialogTitle: 'Please select an output file:', fileName: '${device.name}-id.png', allowedExtensions: ['*.png']);
+    if (imageData != null) {
+      if (PlatformInfo.isDesktopOS) {
+        var outputFile = await FilePicker.platform.saveFile(
+            dialogTitle: 'Please select an output file:',
+            fileName: '${device.name}-id.png',
+            allowedExtensions: ['*.png']);
 
-    if (outputFile != null && imageData != null) {
-      var file = File(outputFile);
-      await file.writeAsBytes(imageData.buffer.asUint8List());
+        if (outputFile != null) {
+          var file = File(outputFile);
+          await file.writeAsBytes(imageData.buffer.asUint8List());
+        }
+      } else if (Platform.isAndroid) {
+        var directory = Directory("/storage/emulated/0/Download");
+        var file = File('${directory.path}/${device.name}.png');
+        await file.writeAsBytes(imageData.buffer.asUint8List());
+      } else {
+        var directory = await getApplicationDocumentsDirectory();
+        var file = File('${directory.path}/${device.name}.png');
+        await file.writeAsBytes(imageData.buffer.asUint8List());
+      }
     }
   }
 }

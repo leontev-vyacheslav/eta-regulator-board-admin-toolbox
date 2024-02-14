@@ -10,6 +10,9 @@ class AppBaseDialog extends AlertDialog {
   EdgeInsetsGeometry? get titlePadding => const EdgeInsets.fromLTRB(20, 15, 20, 15);
 
   @override
+  EdgeInsets get insetPadding => const EdgeInsets.all(10);
+
+  @override
   get shape => const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0)));
 
   @override
