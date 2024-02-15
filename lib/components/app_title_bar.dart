@@ -13,7 +13,7 @@ class AppTitleBar extends StatelessWidget {
 
   Widget _getAppBarRow() {
     return Padding(
-      padding: EdgeInsets.only(top: PlatformInfo.isDesktopOS ? 0 : 20),
+      padding: PlatformInfo.isDesktopOS ? const EdgeInsets.fromLTRB(10, 10, 20, 10) : const EdgeInsets.only(top: 20),
       child: Row(children: [
         IconButton(
             iconSize: 32,

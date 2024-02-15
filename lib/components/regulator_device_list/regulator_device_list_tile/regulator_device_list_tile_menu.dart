@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
@@ -39,7 +41,28 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
           ),
           PopupMenuItem(
             onTap: () async {
-              updateCallback!(device: device, operation: UpdateCallbackOperations.remove);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AppBaseDialog(
+                      titleText: 'Confirm',
+                      context: context,
+                      actions: [
+                        AppElevatedButton(
+                            onPressed: () async {
+                              updateCallback!(device: device, operation: UpdateCallbackOperations.remove);
+                              Navigator.pop(context);
+                            },
+                            child: const Text(AppStrings.buttonOk)),
+                        AppElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(AppStrings.buttonCancel))
+                      ],
+                      content: const SizedBox(width: 480, child: Text(AppStrings.confirmRemoveDevice)),
+                    );
+                  });
             },
             child: const Row(children: [
               Icon(Icons.delete_outline),
@@ -58,7 +81,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
               )),
           PopupMenuItem(
             onTap: () {
-              _showDeviceQrCode();
+              _saveDeviceQrCode();
             },
             child: const Row(children: [
               Icon(Icons.qr_code),
@@ -120,7 +143,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
     }
   }
 
-  void _showDeviceQrCode() async {
+  void _saveDeviceQrCode() async {
     var painter = QrPainter(
       data: device.id,
       // ignore: deprecated_member_use
@@ -136,23 +159,20 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
     var imageData = await painter.toImageData(1024, format: ImageByteFormat.png);
 
     if (imageData != null) {
+      String? outputFile;
       if (PlatformInfo.isDesktopOS) {
-        var outputFile = await FilePicker.platform.saveFile(
-            dialogTitle: 'Please select an output file:',
-            fileName: '${device.name}-id.png',
-            allowedExtensions: ['*.png']);
-
-        if (outputFile != null) {
-          var file = File(outputFile);
-          await file.writeAsBytes(imageData.buffer.asUint8List());
-        }
+        outputFile = await FilePicker.platform.saveFile(
+            dialogTitle: 'Please select an output file:', fileName: '${device.name}.png', allowedExtensions: ['*.png']);
       } else if (Platform.isAndroid) {
         var directory = Directory("/storage/emulated/0/Download");
-        var file = File('${directory.path}/${device.name}.png');
-        await file.writeAsBytes(imageData.buffer.asUint8List());
+        outputFile = '${directory.path}/${device.name}.png';
       } else {
         var directory = await getApplicationDocumentsDirectory();
-        var file = File('${directory.path}/${device.name}.png');
+        outputFile = '${directory.path}/${device.name}.png';
+      }
+
+      if (outputFile != null) {
+        var file = File(outputFile);
         await file.writeAsBytes(imageData.buffer.asUint8List());
       }
     }

@@ -7,6 +7,8 @@ class AppStrings {
 
   static const String confirmAppExit = 'Do you really want to exit app?';
 
+  static const String confirmRemoveDevice = 'Do you really want to remove device?';
+
   static const buttonOk = 'OK';
 
   static const buttonCancel = 'CANCEL';

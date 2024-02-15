@@ -49,8 +49,8 @@ class AccessTokenDialog extends AppBaseDialog {
             labelText: 'Access token',
             suffixIcon: IconButton(
               onPressed: () {
+                
                 _accessTokenEditingController!.clear();
-
               },
               icon: const Icon(Icons.key),
             ),

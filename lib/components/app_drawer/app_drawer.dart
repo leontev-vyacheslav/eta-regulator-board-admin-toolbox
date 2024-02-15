@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
+import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:file_picker/file_picker.dart';
@@ -128,10 +129,7 @@ class AppDrawer extends Drawer {
             titleText: 'Confirm',
             context: context,
             actions: [
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  ),
+              AppElevatedButton(
                   onPressed: () async {
                     if (Platform.isWindows || Platform.isLinux) {
                       await windowManager.close();
@@ -140,10 +138,7 @@ class AppDrawer extends Drawer {
                     }
                   },
                   child: const Text(AppStrings.buttonOk)),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  ),
+              AppElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
