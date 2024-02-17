@@ -34,15 +34,19 @@ class _HomePageState extends State<HomePage> {
         await repository.remove(device);
       }
     }
-
+    var devices = await repository.getList();
     setState(() {
-      _devices = repository.getList();
+      _devices = devices;
     });
   }
 
   @override
   void initState() {
-    _devices = RegulatorDeviceRepository(context).getList();
+    RegulatorDeviceRepository(context).getList().then((devices) {
+      setState(() {
+        _devices = devices;
+      });
+    });
     super.initState();
 
     FlutterNativeSplash.remove();

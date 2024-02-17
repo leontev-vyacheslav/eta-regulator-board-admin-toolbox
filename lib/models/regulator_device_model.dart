@@ -17,5 +17,4 @@ class RegulatorDeviceModel {
   factory RegulatorDeviceModel.fromJson(Map<String, dynamic> json) => _$RegulatorDeviceModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$RegulatorDeviceModelToJson(this);
-
 }
