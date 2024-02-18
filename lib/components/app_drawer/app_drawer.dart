@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +32,6 @@ class AppDrawer extends Drawer {
               visualDensity: const VisualDensity(vertical: 2),
               onTap: () async {
                 await downloadDevices();
-              }),
-          ListTile(
-              leading: const Icon(Icons.upload),
-              title: const Text(AppStrings.menuUpload),
-              visualDensity: const VisualDensity(vertical: 2),
-              onTap: () async {
-                await uploadDevices();
               }),
           const Divider(
             height: 1,
@@ -87,27 +82,12 @@ class AppDrawer extends Drawer {
     }
 
     if (context.mounted) {
-      var jsonDevices = App.of(context).localStorage.getString('devices');
-      if (jsonDevices != null && outputFile != null) {
+      var devices = await RegulatorDeviceRepository().getList();
+      var jsonDevices = jsonEncode(devices);
+
+      if (outputFile != null) {
         var file = File(outputFile);
         await file.writeAsString(jsonDevices);
-      }
-    }
-  }
-
-  Future<void> uploadDevices() async {
-    var pickerResult = await FilePicker.platform.pickFiles(
-        dialogTitle: 'Please select a file:', allowedExtensions: ['json'], allowMultiple: false, type: FileType.custom);
-
-    if (pickerResult != null && pickerResult.files.isNotEmpty) {
-      var file = File(pickerResult.files[0].path!);
-
-      var jsonDevices = await file.readAsString();
-
-      if (context.mounted) {
-        await App.of(context).localStorage.setString('devices', jsonDevices);
-        // ignore: use_build_context_synchronously
-        await Navigator.popAndPushNamed(context, '/');
       }
     }
   }

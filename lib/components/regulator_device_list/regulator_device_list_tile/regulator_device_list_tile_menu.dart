@@ -50,7 +50,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
                       actions: [
                         AppElevatedButton(
                             onPressed: () async {
-                              updateCallback!(device: device, operation: UpdateCallbackOperations.remove);
+                              updateCallback!(device: device, operation: UpdateCallbackOperations.delete);
                               Navigator.pop(context);
                             },
                             child: const Text(AppStrings.buttonOk)),
@@ -139,7 +139,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
         });
 
     if (dialogResult?.result == ModalResults.ok && updateCallback != null) {
-      updateCallback!(device: device, operation: UpdateCallbackOperations.update);
+      updateCallback!(device: device, operation: UpdateCallbackOperations.put);
     }
   }
 

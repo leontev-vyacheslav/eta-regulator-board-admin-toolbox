@@ -25,13 +25,15 @@ class _HomePageState extends State<HomePage> {
   List<RegulatorDeviceModel> _devices = List.empty(growable: true);
 
   void update({RegulatorDeviceModel? device, required UpdateCallbackOperations operation}) async {
-    var repository = RegulatorDeviceRepository(context);
+    var repository = RegulatorDeviceRepository();
 
     if (device != null) {
-      if (operation == UpdateCallbackOperations.create || operation == UpdateCallbackOperations.update) {
-        await repository.update(device);
-      } else if (operation == UpdateCallbackOperations.remove) {
-        await repository.remove(device);
+      if (operation == UpdateCallbackOperations.post) {
+        await repository.post(device);
+      } else if (operation == UpdateCallbackOperations.put) {
+        await repository.put(device);
+      } else if (operation == UpdateCallbackOperations.delete) {
+        await repository.delete(device);
       }
     }
     var devices = await repository.getList();
@@ -42,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    RegulatorDeviceRepository(context).getList().then((devices) {
+    RegulatorDeviceRepository().getList().then((devices) {
       setState(() {
         _devices = devices;
       });
@@ -126,12 +128,17 @@ class _HomePageState extends State<HomePage> {
           return RegulatorDeviceDialog(
             context: context,
             titleText: AppStrings.dialogTitleEditDevice,
-            device: RegulatorDeviceModel(id: '', name: 'Omega-XXXX', macAddress: '00:00:00:00:00:00', masterKey: ''),
+            device: RegulatorDeviceModel(
+                id: '',
+                name: 'Omega-XXXX',
+                macAddress: '00:00:00:00:00:00',
+                masterKey: '',
+                creationDate: DateTime.now().toIso8601String()),
           );
         });
 
     if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
-      update(device: dialogResult.value, operation: UpdateCallbackOperations.create);
+      update(device: dialogResult.value, operation: UpdateCallbackOperations.post);
     }
   }
 }

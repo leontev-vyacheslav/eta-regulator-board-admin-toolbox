@@ -1,12 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/access_token_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
-import 'package:eta_regulator_board_admin_toolbox/models/access_token_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
-import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -53,29 +49,10 @@ class AccessTokenDialog extends AppBaseDialog {
             labelText: 'Access token',
             suffixIcon: IconButton(
               onPressed: () async {
-                var httpClient = HttpClient();
-                try {
-                  var host = 'eta.ru';
-                  var port = 15020;
-
-                  if (kDebugMode) {
-                    port = 5020;
-                    if (PlatformInfo.isDesktopOS) {
-                      host = 'localhost';
-                    } else if (Platform.isAndroid) {
-                      host = '10.0.2.2';
-                    }
-                  }
-                  var request = await httpClient.get(host, port, '/access-token?device_id=${device.id}');
-                  var response = await request.close();
-                  if (response.statusCode == 200) {
-                    var json = await response.transform(utf8.decoder).join();
-                    var accessTokenMap = jsonDecode(json);
-                    var accessToken = AccessTokenModel.fromJson(accessTokenMap);
-                    _accessTokenEditingController!.text = accessToken.token;
-                  }
-                } finally {
-                  httpClient.close();
+                var repository = AccessTokenRepository();
+                var accessToken = await repository.get(device);
+                if (accessToken != null) {
+                  _accessTokenEditingController!.text = accessToken.token;
                 }
               },
               icon: const Icon(Icons.key),

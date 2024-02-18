@@ -11,8 +11,9 @@ class RegulatorDeviceModel {
   String name;
   String macAddress;
   String masterKey;
+  String creationDate;
 
-  RegulatorDeviceModel({required this.id, required this.name, required this.macAddress, required this.masterKey});
+  RegulatorDeviceModel({required this.id, required this.name, required this.macAddress, required this.masterKey, required this.creationDate});
 
   factory RegulatorDeviceModel.fromJson(Map<String, dynamic> json) => _$RegulatorDeviceModelFromJson(json);
 
