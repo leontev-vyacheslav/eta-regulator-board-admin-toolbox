@@ -34,10 +34,10 @@ class AppState extends State<App> {
 
   SharedPreferences get localStorage => widget.localStorage;
 
-  void toggleTheme() {
+  Future<void> toggleTheme() async {
     themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
 
-    localStorage.setString('theme', _themeMode.name);
+    await localStorage.setString('theme', _themeMode.name);
   }
 
   @override

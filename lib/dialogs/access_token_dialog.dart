@@ -1,9 +1,10 @@
-
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/access_token_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
 class AccessTokenDialog extends AppBaseDialog {
@@ -47,17 +48,40 @@ class AccessTokenDialog extends AppBaseDialog {
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             labelText: 'Access token',
-            suffixIcon: IconButton(
-              onPressed: () async {
-                var repository = AccessTokenRepository();
-                var accessToken = await repository.get(device);
-                if (accessToken != null) {
-                  _accessTokenEditingController!.text = accessToken.token;
-                }
-              },
-              icon: const Icon(Icons.key),
+            suffixIcon: SizedBox(
+              width: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      await _getAccessToken();
+                    },
+                    icon: const Icon(Icons.key),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      if (_accessTokenEditingController!.text.isNotEmpty) {
+                        Clipboard.setData(ClipboardData(text: _accessTokenEditingController!.text)).then((_) {
+                          AppToast.show(context, ToastTypes.success, 'New access token copied',
+                              duration: const Duration(seconds: 2));
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.copy),
+                  )
+                ],
+              ),
             ),
           ),
         ),
       ]));
+
+  Future<void> _getAccessToken() async {
+    var repository = AccessTokenRepository();
+    var accessToken = await repository.get(device);
+    if (accessToken != null) {
+      _accessTokenEditingController!.text = accessToken.token;
+    }
+  }
 }

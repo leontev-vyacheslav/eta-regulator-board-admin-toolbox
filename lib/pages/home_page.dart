@@ -7,6 +7,7 @@ import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_r
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(5),
           child: Column(
             children: [
-              AppTitleBar(scaffoldKey: _scaffoldKey),
+              AppTitleBar(scaffoldKey: _scaffoldKey, context: context),
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
                 child: Row(
@@ -78,6 +79,7 @@ class _HomePageState extends State<HomePage> {
                           PopupMenuItem(
                             onTap: () async {
                               update(operation: UpdateCallbackOperations.refresh);
+                              AppToast.show(context, ToastTypes.info, 'The regulator device list was refreshed.');
                             },
                             child: const Row(children: [
                               Icon(Icons.refresh_outlined),

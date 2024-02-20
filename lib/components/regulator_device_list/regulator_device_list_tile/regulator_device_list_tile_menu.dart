@@ -28,9 +28,6 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
       itemBuilder: (context) {
         return [
           PopupMenuItem(
-            onTap: () async {
-              await _showRegulatorDeviceDialog();
-            },
             child: const Row(children: [
               Icon(Icons.edit_outlined),
               SizedBox(
@@ -38,32 +35,11 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
               ),
               Text(AppStrings.menuEditDevice)
             ]),
+            onTap: () async {
+              await _showRegulatorDeviceDialog();
+            },
           ),
           PopupMenuItem(
-            onTap: () async {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AppBaseDialog(
-                      titleText: 'Confirm',
-                      context: context,
-                      actions: [
-                        AppElevatedButton(
-                            onPressed: () async {
-                              updateCallback!(device: device, operation: UpdateCallbackOperations.delete);
-                              Navigator.pop(context);
-                            },
-                            child: const Text(AppStrings.buttonOk)),
-                        AppElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text(AppStrings.buttonCancel))
-                      ],
-                      content: const SizedBox(width: 480, child: Text(AppStrings.confirmRemoveDevice)),
-                    );
-                  });
-            },
             child: const Row(children: [
               Icon(Icons.delete_outline),
               SizedBox(
@@ -71,6 +47,9 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
               ),
               Text(AppStrings.menuRemoveDevice)
             ]),
+            onTap: () async {
+              await _showDeleteRegulatorDevice();
+            },
           ),
           PopupMenuItem(
               onTap: () {},
@@ -80,9 +59,6 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
                 thickness: 1,
               )),
           PopupMenuItem(
-            onTap: () {
-              _saveDeviceQrCode();
-            },
             child: const Row(children: [
               Icon(Icons.qr_code),
               SizedBox(
@@ -90,6 +66,9 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
               ),
               Text(AppStrings.menuQRCodeId)
             ]),
+            onTap: () async {
+              await _saveDeviceQrCode();
+            },
           ),
           PopupMenuItem(
               onTap: () {},
@@ -99,19 +78,45 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
                 thickness: 1,
               )),
           PopupMenuItem(
-              onTap: () async {
-                await _showAccessTokenDialog();
-              },
-              child: const Row(children: [
-                Icon(Icons.key),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuCreateAccessToken)
-              ])),
+            child: const Row(children: [
+              Icon(Icons.key),
+              SizedBox(
+                width: 10,
+              ),
+              Text(AppStrings.menuCreateAccessToken)
+            ]),
+            onTap: () async {
+              await _showAccessTokenDialog();
+            },
+          ),
         ];
       },
     );
+  }
+
+  Future<void> _showDeleteRegulatorDevice() async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AppBaseDialog(
+            titleText: AppStrings.dialogTitleConfirm,
+            context: context,
+            actions: [
+              AppElevatedButton(
+                  onPressed: () async {
+                    updateCallback!(device: device, operation: UpdateCallbackOperations.delete);
+                    Navigator.pop(context);
+                  },
+                  child: const Text(AppStrings.buttonOk)),
+              AppElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(AppStrings.buttonCancel))
+            ],
+            content: const SizedBox(width: 480, child: Text(AppStrings.confirmRemoveDevice)),
+          );
+        });
   }
 
   Future<void> _showAccessTokenDialog() async {
@@ -143,7 +148,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
     }
   }
 
-  void _saveDeviceQrCode() async {
+  Future<void> _saveDeviceQrCode() async {
     var painter = QrPainter(
       data: device.id,
       // ignore: deprecated_member_use

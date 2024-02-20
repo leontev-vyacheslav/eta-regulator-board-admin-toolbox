@@ -38,4 +38,7 @@ class AppStrings {
   static const dialogTitleAccessToken = 'Create access token';
 
   static const dialogTitleEditDevice = 'Edit device';
+
+  static const dialogTitleConfirm = 'Confirm';
+
 }

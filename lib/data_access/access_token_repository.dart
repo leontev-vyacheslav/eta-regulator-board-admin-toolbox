@@ -9,7 +9,7 @@ class AccessTokenRepository extends AppRepository {
   Future<AccessTokenModel?> get(RegulatorDeviceModel device) async {
     AccessTokenModel? accessToken;
 
-    var httpClient = getHttpClient();
+    var httpClient = await getHttpClient();
 
     try {
       var response = await httpClient.get('${AccessTokenRepository.endPoint}/${device.id}');

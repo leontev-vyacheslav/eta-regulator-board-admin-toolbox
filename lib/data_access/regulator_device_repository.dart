@@ -8,7 +8,7 @@ class RegulatorDeviceRepository extends AppRepository {
   Future<List<RegulatorDeviceModel>> getList() async {
     List<RegulatorDeviceModel> devices = List.empty(growable: true);
 
-    var httpClient = getHttpClient();
+    var httpClient = await getHttpClient();
 
     try {
       var response = await httpClient.get('${RegulatorDeviceRepository.endPoint}/');
@@ -28,7 +28,7 @@ class RegulatorDeviceRepository extends AppRepository {
   }
 
   Future<void> put(RegulatorDeviceModel device) async {
-    var httpClient = getHttpClient();
+    var httpClient = await getHttpClient();
     try {
       await httpClient.put('${RegulatorDeviceRepository.endPoint}/', data: device.toJson());
     } catch (e) {
@@ -40,7 +40,7 @@ class RegulatorDeviceRepository extends AppRepository {
   }
 
   Future<void> post(RegulatorDeviceModel device) async {
-    var httpClient = getHttpClient();
+    var httpClient = await getHttpClient();
 
     try {
       await httpClient.post('${RegulatorDeviceRepository.endPoint}/', data: device.toJson());
@@ -53,7 +53,7 @@ class RegulatorDeviceRepository extends AppRepository {
   }
 
   Future<void> delete(RegulatorDeviceModel device) async {
-    var httpClient = getHttpClient();
+    var httpClient = await getHttpClient();
     try {
       await httpClient.delete('${RegulatorDeviceRepository.endPoint}/${device.id}');
     } catch (e) {

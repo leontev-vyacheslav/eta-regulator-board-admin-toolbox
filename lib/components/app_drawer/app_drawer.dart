@@ -1,19 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
-import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
-import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
-import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/file_helper.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/about_dialog.dart' as about_dialog;
-import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:window_manager/window_manager.dart';
 
 class AppDrawer extends Drawer {
   final BuildContext context;
@@ -31,7 +23,7 @@ class AppDrawer extends Drawer {
               title: const Text(AppStrings.menuDownload),
               visualDensity: const VisualDensity(vertical: 2),
               onTap: () async {
-                await downloadDevices();
+                await FileHelper.downloadDevices();
               }),
           const Divider(
             height: 1,
@@ -41,8 +33,8 @@ class AppDrawer extends Drawer {
             leading: const Icon(Icons.app_registration),
             title: const Text(AppStrings.menuAbout),
             visualDensity: const VisualDensity(vertical: 2),
-            onTap: () {
-              showAboutDialog();
+            onTap: () async {
+              await showAboutDialog();
             },
           ),
           const Divider(
@@ -54,7 +46,10 @@ class AppDrawer extends Drawer {
                 App.of(context).themeMode == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
             title: Text(App.of(context).themeMode == ThemeMode.dark ? 'Light theme' : 'Dark theme'),
             onTap: () {
-              App.of(context).toggleTheme();
+              App.of(context).toggleTheme().then((value) {
+                AppToast.show(
+                    context, ToastTypes.info, 'Theme was changed to ${App.of(context).themeMode.name.toUpperCase()}');
+              });
             },
           ),
           ListTile(
@@ -62,38 +57,14 @@ class AppDrawer extends Drawer {
             title: const Text(AppStrings.menuExit),
             visualDensity: const VisualDensity(vertical: 2),
             onTap: () async {
-              showAppExitConfirmDialog();
+              await showAppExitConfirmDialog();
             },
           ),
         ],
       );
 
-  Future<void> downloadDevices() async {
-    String? outputFile;
-    if (PlatformInfo.isDesktopOS) {
-      outputFile = await FilePicker.platform.saveFile(
-          dialogTitle: 'Please select an output file:', fileName: 'devices.json', allowedExtensions: ['json']);
-    } else if (Platform.isAndroid) {
-      var directory = Directory("/storage/emulated/0/Download");
-      outputFile = '${directory.path}/devices.json';
-    } else {
-      var directory = await getApplicationDocumentsDirectory();
-      outputFile = '${directory.path}/devices.json';
-    }
-
-    if (context.mounted) {
-      var devices = await RegulatorDeviceRepository().getList();
-      var jsonDevices = jsonEncode(devices);
-
-      if (outputFile != null) {
-        var file = File(outputFile);
-        await file.writeAsString(jsonDevices);
-      }
-    }
-  }
-
-  void showAboutDialog() {
-    showDialog(
+  Future<void> showAboutDialog() async {
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return about_dialog.AboutDialog(context: context, titleText: AppStrings.menuAbout);
@@ -101,31 +72,11 @@ class AppDrawer extends Drawer {
     );
   }
 
-  void showAppExitConfirmDialog() {
-    showDialog(
+  Future<void> showAppExitConfirmDialog() async {
+    await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AppBaseDialog(
-            titleText: 'Confirm',
-            context: context,
-            actions: [
-              AppElevatedButton(
-                  onPressed: () async {
-                    if (Platform.isWindows || Platform.isLinux) {
-                      await windowManager.close();
-                    } else {
-                      SystemNavigator.pop();
-                    }
-                  },
-                  child: const Text(AppStrings.buttonOk)),
-              AppElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(AppStrings.buttonCancel))
-            ],
-            content: const SizedBox(width: 480, child: Text(AppStrings.confirmAppExit)),
-          );
+          return AppExitDialog(titleText: AppStrings.dialogTitleConfirm, context: context);
         });
   }
 }
