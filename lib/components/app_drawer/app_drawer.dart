@@ -23,7 +23,10 @@ class AppDrawer extends Drawer {
               title: const Text(AppStrings.menuDownload),
               visualDensity: const VisualDensity(vertical: 2),
               onTap: () async {
-                await FileHelper.downloadDevices();
+                await FileHelper.downloadDevices().then((value) {
+                  AppToast.show(
+                      context, ToastTypes.success, 'Regulator device list saved to a json file successfully.');
+                });
               }),
           const Divider(
             height: 1,

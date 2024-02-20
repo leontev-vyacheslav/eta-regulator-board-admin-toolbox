@@ -4,29 +4,29 @@ import 'package:fluttertoast/fluttertoast.dart';
 enum ToastTypes { success, info, error, warning }
 
 class AppToast {
+  static List<Color?> toastColors = [Colors.green[500], Colors.blue[300], Colors.red[500], Colors.yellow[500]];
+  static List<IconData> icons = [Icons.check, Icons.info, Icons.error, Icons.warning];
+
   static void show(BuildContext context, ToastTypes type, String text,
       {Duration duration = const Duration(seconds: 2)}) {
     FToast().init(context).showToast(
           child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                color: type == ToastTypes.success
-                    ? Colors.green[500]
-                    : (type == ToastTypes.error
-                        ? Colors.red[500]
-                        : (type == ToastTypes.warning ? Colors.yellow[500] : Colors.blue[300])),
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppToast.toastColors[type.index]),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Icon(Icons.check),
+                  Icon(AppToast.icons[type.index]),
                   const SizedBox(
-                    width: 12.0,
+                    width: 5.0,
                   ),
-                  Text(
+                  Flexible(
+                      child: Text(
+                    overflow: TextOverflow.visible,
                     text,
-                  )
+                  ))
                 ],
               )),
           toastDuration: duration,
