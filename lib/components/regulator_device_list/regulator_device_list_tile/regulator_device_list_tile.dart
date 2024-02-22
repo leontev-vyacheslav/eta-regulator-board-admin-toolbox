@@ -3,17 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../../../models/regulator_device_model.dart';
 
-enum UpdateCallbackOperations { post, put, delete, refresh }
-
-typedef UpdateCallbackFunction = void Function(
-    {RegulatorDeviceModel? device, required UpdateCallbackOperations operation});
-
 class RegulatorDeviceListTile extends ListTile {
   final RegulatorDeviceModel device;
   final BuildContext context;
-  final UpdateCallbackFunction? updateCallback;
 
-  const RegulatorDeviceListTile({required this.context, required this.device, this.updateCallback, super.key});
+  const RegulatorDeviceListTile({required this.context, required this.device, super.key});
 
   @override
   Widget? get leading => const Icon(Icons.devices);
@@ -30,5 +24,5 @@ class RegulatorDeviceListTile extends ListTile {
   VisualDensity? get visualDensity => const VisualDensity(vertical: 2);
 
   @override
-  Widget? get trailing => RegulatorDeviceListTileMenu(device: device, context: context, updateCallback: updateCallback);
+  Widget? get trailing => RegulatorDeviceListTileMenu(device: device, context: context);
 }

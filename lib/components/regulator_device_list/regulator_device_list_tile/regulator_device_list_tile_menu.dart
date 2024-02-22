@@ -2,101 +2,103 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
-import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:eta_regulator_board_admin_toolbox/notifiers/regulator_devices_change_notifier.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class RegulatorDeviceListTileMenu extends StatelessWidget {
   final BuildContext context;
   final RegulatorDeviceModel device;
-  final UpdateCallbackFunction? updateCallback;
 
-  const RegulatorDeviceListTileMenu({super.key, required this.context, required this.device, this.updateCallback});
+  const RegulatorDeviceListTileMenu({super.key, required this.context, required this.device});
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
-      itemBuilder: (context) {
-        return [
-          PopupMenuItem(
-            child: const Row(children: [
-              Icon(Icons.edit_outlined),
-              SizedBox(
-                width: 10,
-              ),
-              Text(AppStrings.menuEditDevice)
-            ]),
-            onTap: () async {
-              await _showRegulatorDeviceDialog();
-            },
-          ),
-          PopupMenuItem(
-            child: const Row(children: [
-              Icon(Icons.delete_outline),
-              SizedBox(
-                width: 10,
-              ),
-              Text(AppStrings.menuRemoveDevice)
-            ]),
-            onTap: () async {
-              await _showDeleteRegulatorDevice();
-            },
-          ),
-          PopupMenuItem(
-              onTap: () {},
-              height: 1,
-              child: const Divider(
+    return Consumer<RegulatorDevicesChangeNotifier>(
+      builder: (context, value, child) => PopupMenuButton(
+        itemBuilder: (context) {
+          return [
+            PopupMenuItem(
+              child: const Row(children: [
+                Icon(Icons.edit_outlined),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(AppStrings.menuEditDevice)
+              ]),
+              onTap: () async {
+                await _showRegulatorDeviceDialog();
+              },
+            ),
+            PopupMenuItem(
+              child: const Row(children: [
+                Icon(Icons.delete_outline),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(AppStrings.menuRemoveDevice)
+              ]),
+              onTap: () async {
+                await _showDeleteRegulatorDevice();
+              },
+            ),
+            PopupMenuItem(
+                onTap: () {},
                 height: 1,
-                thickness: 1,
-              )),
-          PopupMenuItem(
-            child: const Row(children: [
-              Icon(Icons.qr_code),
-              SizedBox(
-                width: 10,
-              ),
-              Text(AppStrings.menuQRCodeId)
-            ]),
-            onTap: () async {
-              await _saveDeviceQrCode();
-            },
-          ),
-          PopupMenuItem(
-              onTap: () {},
-              height: 1,
-              child: const Divider(
+                child: const Divider(
+                  height: 1,
+                  thickness: 1,
+                )),
+            PopupMenuItem(
+              child: const Row(children: [
+                Icon(Icons.qr_code),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(AppStrings.menuQRCodeId)
+              ]),
+              onTap: () async {
+                await _saveDeviceQrCode();
+              },
+            ),
+            PopupMenuItem(
+                onTap: () {},
                 height: 1,
-                thickness: 1,
-              )),
-          PopupMenuItem(
-            child: const Row(children: [
-              Icon(Icons.key),
-              SizedBox(
-                width: 10,
-              ),
-              Text(AppStrings.menuCreateAccessToken)
-            ]),
-            onTap: () async {
-              await _showAccessTokenDialog();
-            },
-          ),
-        ];
-      },
+                child: const Divider(
+                  height: 1,
+                  thickness: 1,
+                )),
+            PopupMenuItem(
+              child: const Row(children: [
+                Icon(Icons.key),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(AppStrings.menuCreateAccessToken)
+              ]),
+              onTap: () async {
+                await _showAccessTokenDialog();
+              },
+            ),
+          ];
+        },
+      ),
     );
   }
 
   Future<void> _showDeleteRegulatorDevice() async {
-    await showDialog(
+    var dialogResult = await showDialog<DialogResult>(
         context: context,
         builder: (BuildContext context) {
           return AppBaseDialog(
@@ -105,20 +107,29 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
             actions: [
               AppElevatedButton(
                   onPressed: () async {
-                    updateCallback!(device: device, operation: UpdateCallbackOperations.delete);
-                    AppToast.show(context, ToastTypes.success, 'The device ${device.name} successfully removed.');
-                    Navigator.pop(context);
+                    Navigator.pop<DialogResult>(
+                        context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.ok, value: device));
                   },
                   child: const Text(AppStrings.buttonOk)),
               AppElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop<DialogResult>(
+                        context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.cancel));
                   },
                   child: const Text(AppStrings.buttonCancel))
             ],
             content: const SizedBox(width: 480, child: Text(AppStrings.confirmRemoveDevice)),
           );
         });
+
+    if (dialogResult?.result == ModalResults.ok && dialogResult?.value != null) {
+      var updatedDevice = await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false).delete(device);
+      if (updatedDevice != null) {
+        AppToast.show(context, ToastTypes.success, 'The device ${device.name} successfully removed.');
+      } else {
+        AppToast.show(context, ToastTypes.error, 'The device deleting was failed.');
+      }
+    }
   }
 
   Future<void> _showAccessTokenDialog() async {
@@ -145,8 +156,14 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
           );
         });
 
-    if (dialogResult?.result == ModalResults.ok && updateCallback != null) {
-      updateCallback!(device: device, operation: UpdateCallbackOperations.put);
+    if (dialogResult?.result == ModalResults.ok) {
+      var updatedDevice = await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false)
+          .put(device);
+      if (updatedDevice != null) {
+        AppToast.show(context, ToastTypes.success, 'The device ${device.name} successfully updated.');
+      } else {
+        AppToast.show(context, ToastTypes.error, 'The device updating was failed.');
+      }
     }
   }
 
