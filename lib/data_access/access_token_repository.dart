@@ -1,5 +1,6 @@
 import 'package:eta_regulator_board_admin_toolbox/models/access_token_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:flutter/foundation.dart';
 
 import 'app_repository.dart';
 
@@ -17,8 +18,7 @@ class AccessTokenRepository extends AppRepository {
         accessToken = AccessTokenModel.fromJson(response.data);
       }
     } on Exception catch (e) {
-      // ignore: avoid_print
-      print('Exception details:\n $e');
+      debugPrint('Exception details:\n $e');
     } finally {
       httpClient.close(force: true);
     }

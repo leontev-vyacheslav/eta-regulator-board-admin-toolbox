@@ -1,15 +1,16 @@
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
-import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list_tile/regulator_device_list_tile.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
-import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:provider/provider.dart';
+
+import '../notifiers/regulator_devices_change_notifier.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -23,33 +24,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<RegulatorDeviceModel> _devices = List.empty(growable: true);
-
-  void update({RegulatorDeviceModel? device, required UpdateCallbackOperations operation}) async {
-    var repository = RegulatorDeviceRepository();
-
-    if (device != null) {
-      if (operation == UpdateCallbackOperations.post) {
-        await repository.post(device);
-      } else if (operation == UpdateCallbackOperations.put) {
-        await repository.put(device);
-      } else if (operation == UpdateCallbackOperations.delete) {
-        await repository.delete(device);
-      }
-    }
-    var devices = await repository.getList();
-    setState(() {
-      _devices = devices;
-    });
-  }
-
   @override
   void initState() {
-    RegulatorDeviceRepository().getList().then((devices) {
-      setState(() {
-        _devices = devices;
-      });
-    });
     super.initState();
 
     FlutterNativeSplash.remove();
@@ -58,69 +34,74 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      drawer: AppDrawer(scaffoldKey: _scaffoldKey, context: context),
-      body: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            children: [
-              AppTitleBar(scaffoldKey: _scaffoldKey, context: context),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
-                child: Row(
-                  children: [
-                    const Expanded(
-                        child: Text(
-                      'Regulator device list',
-                    )),
-                    PopupMenuButton(
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                            onTap: () async {
-                              update(operation: UpdateCallbackOperations.refresh);
-                              AppToast.show(context, ToastTypes.info, 'The regulator device list was refreshed.');
-                            },
-                            child: const Row(children: [
-                              Icon(Icons.refresh_outlined),
-                              SizedBox(
-                                width: 10,
+        key: _scaffoldKey,
+        drawer: AppDrawer(scaffoldKey: _scaffoldKey, context: context),
+        body: Consumer<RegulatorDevicesChangeNotifier>(
+          builder: (context, value, child) => Padding(
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                children: [
+                  AppTitleBar(scaffoldKey: _scaffoldKey, context: context),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
+                    child: Row(
+                      children: [
+                        const Expanded(
+                            child: Text(
+                          'Regulator device list',
+                        )),
+                        PopupMenuButton(
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                onTap: () async {
+                                  var devices =
+                                      await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false)
+                                          .refresh();
+                                  if (devices != null) {
+                                    AppToast.show(context, ToastTypes.info, 'The regulator device list was refreshed.');
+                                  } else {
+                                    AppToast.show(
+                                        context, ToastTypes.error, 'An error was happened during of the  updating.');
+                                  }
+                                },
+                                child: const Row(children: [
+                                  Icon(Icons.refresh_outlined),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(AppStrings.menuRefresh)
+                                ]),
                               ),
-                              Text(AppStrings.menuRefresh)
-                            ]),
-                          ),
-                          PopupMenuItem(
-                              onTap: () {},
-                              height: 1,
-                              child: const Divider(
-                                height: 1,
-                                thickness: 1,
-                              )),
-                          PopupMenuItem(
-                            onTap: () async {
-                              await _showCreateRegulatorDialog();
-                            },
-                            child: const Row(children: [
-                              Icon(Icons.add),
-                              SizedBox(
-                                width: 10,
+                              PopupMenuItem(
+                                  onTap: () {},
+                                  height: 1,
+                                  child: const Divider(
+                                    height: 1,
+                                    thickness: 1,
+                                  )),
+                              PopupMenuItem(
+                                onTap: () async {
+                                  await _showCreateRegulatorDialog();
+                                },
+                                child: const Row(children: [
+                                  Icon(Icons.add),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(AppStrings.menuAddDevice)
+                                ]),
                               ),
-                              Text(AppStrings.menuAddDevice)
-                            ]),
-                          ),
-                        ];
-                      },
-                    )
-                  ],
-                ),
-              ),
-              RegulatorDeviceList(
-                devices: _devices,
-                updateCallback: update,
-              )
-            ],
-          )),
-    );
+                            ];
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                  const RegulatorDeviceList()
+                ],
+              )),
+        ));
   }
 
   Future<void> _showCreateRegulatorDialog() async {
@@ -140,7 +121,13 @@ class _HomePageState extends State<HomePage> {
         });
 
     if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
-      update(device: dialogResult.value, operation: UpdateCallbackOperations.post);
+      var updatedDevice =
+          await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false).post(dialogResult.value!);
+      if (updatedDevice != null) {
+        AppToast.show(context, ToastTypes.success, 'The device ${updatedDevice.name} successfully updated.');
+      } else {
+        AppToast.show(context, ToastTypes.error, 'The device updating was failed.');
+      }
     }
   }
 }

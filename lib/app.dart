@@ -1,6 +1,9 @@
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/pages/home_page.dart';
+import 'package:eta_regulator_board_admin_toolbox/notifiers/regulator_devices_change_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatefulWidget {
@@ -42,13 +45,19 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppStrings.appTitle,
-      themeMode: _themeMode,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark)),
-      home: const HomePage(title: AppStrings.appTitle),
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        Provider<RegulatorDeviceRepository>(create: (_) => RegulatorDeviceRepository()),
+        ChangeNotifierProvider(create: (context) => RegulatorDevicesChangeNotifier())
+      ],
+      child: MaterialApp(
+        title: AppStrings.appTitle,
+        themeMode: _themeMode,
+        theme: ThemeData.light(),
+        darkTheme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark)),
+        home: const HomePage(title: AppStrings.appTitle),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

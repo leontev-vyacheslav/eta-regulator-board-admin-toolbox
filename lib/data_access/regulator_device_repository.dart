@@ -1,14 +1,16 @@
+import 'package:dio/dio.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:flutter/foundation.dart';
 
 import 'app_repository.dart';
 
-class RegulatorDeviceRepository extends AppRepository {
+class RegulatorDeviceRepository {
   static const String endPoint = '/regulator-devices';
+  final Dio httpClient = getIt<AppHttpClientFactory>().httpClient;
 
-  Future<List<RegulatorDeviceModel>> getList() async {
-    List<RegulatorDeviceModel> devices = List.empty(growable: true);
-
-    var httpClient = await getHttpClient();
+  Future<List<RegulatorDeviceModel>?> getList() async {
+    List<RegulatorDeviceModel>? devices = List.empty(growable: true);
 
     try {
       var response = await httpClient.get('${RegulatorDeviceRepository.endPoint}/');
@@ -17,50 +19,55 @@ class RegulatorDeviceRepository extends AppRepository {
         devices = List<RegulatorDeviceModel>.from(devicesMapList.map((e) => RegulatorDeviceModel.fromJson(e)));
       }
     } on Exception catch (e) {
-      devices = List.empty(growable: true);
-      // ignore: avoid_print
-      print('Exception details:\n $e');
-    } finally {
-      httpClient.close(force: true);
+      devices = null;
+      debugPrint('Exception details:\n $e');
     }
 
     return devices;
   }
 
-  Future<void> put(RegulatorDeviceModel device) async {
-    var httpClient = await getHttpClient();
+  Future<RegulatorDeviceModel?> put(RegulatorDeviceModel device) async {
+    RegulatorDeviceModel? updatedDevice;
+
     try {
-      await httpClient.put('${RegulatorDeviceRepository.endPoint}/', data: device.toJson());
+      var response = await httpClient.put('${RegulatorDeviceRepository.endPoint}/', data: device.toJson());
+      if (response.statusCode == 200) {
+        updatedDevice = RegulatorDeviceModel.fromJson(response.data);
+      }
     } catch (e) {
-      // ignore: avoid_print
-      print(e);
-    } finally {
-      httpClient.close(force: true);
+      debugPrint('Exception details:\n $e');
     }
+
+    return updatedDevice;
   }
 
-  Future<void> post(RegulatorDeviceModel device) async {
-    var httpClient = await getHttpClient();
+  Future<RegulatorDeviceModel?> post(RegulatorDeviceModel device) async {
+    RegulatorDeviceModel? updatedDevice;
 
     try {
-      await httpClient.post('${RegulatorDeviceRepository.endPoint}/', data: device.toJson());
+      var response = await httpClient.post('${RegulatorDeviceRepository.endPoint}/', data: device.toJson());
+      if (response.statusCode == 200) {
+        updatedDevice = RegulatorDeviceModel.fromJson(response.data);
+      }
     } catch (e) {
-      // ignore: avoid_print
-      print(e);
-    } finally {
-      httpClient.close(force: true);
+      debugPrint('Exception details:\n $e');
     }
+
+    return updatedDevice;
   }
 
-  Future<void> delete(RegulatorDeviceModel device) async {
-    var httpClient = await getHttpClient();
+  Future<RegulatorDeviceModel?> delete(RegulatorDeviceModel device) async {
+    RegulatorDeviceModel? updatedDevice;
+
     try {
-      await httpClient.delete('${RegulatorDeviceRepository.endPoint}/${device.id}');
+      var response = await httpClient.delete('${RegulatorDeviceRepository.endPoint}/${device.id}');
+      if (response.statusCode == 200) {
+        updatedDevice = RegulatorDeviceModel.fromJson(response.data);
+      }
     } catch (e) {
-      // ignore: avoid_print
-      print('Exception details:\n $e');
-    } finally {
-      httpClient.close(force: true);
+      debugPrint('Exception details:\n $e');
     }
+
+    return updatedDevice;
   }
 }
