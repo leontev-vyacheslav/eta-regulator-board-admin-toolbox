@@ -1,12 +1,13 @@
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/foundation.dart';
 
 class RegulatorDevicesChangeNotifier extends ChangeNotifier {
   final List<RegulatorDeviceModel> _items = [];
+  final RegulatorDeviceRepository repository  = getIt<RegulatorDeviceRepository>();
 
   RegulatorDevicesChangeNotifier() {
-    var repository = RegulatorDeviceRepository();
     repository.getList().then((devices) {
       if (devices != null) {
         _items.addAll(devices);
@@ -18,7 +19,6 @@ class RegulatorDevicesChangeNotifier extends ChangeNotifier {
   List<RegulatorDeviceModel> get items => _items;
 
   Future<List<RegulatorDeviceModel>?> refresh() async {
-    var repository = RegulatorDeviceRepository();
     var devices = await repository.getList();
     if (devices != null) {
       _items.clear();
@@ -30,7 +30,6 @@ class RegulatorDevicesChangeNotifier extends ChangeNotifier {
   }
 
   Future<RegulatorDeviceModel?> post(RegulatorDeviceModel device) async {
-    var repository = RegulatorDeviceRepository();
     var updatedDevice = await repository.post(device);
     if (updatedDevice != null) {
       _items.add(device);
@@ -41,7 +40,6 @@ class RegulatorDevicesChangeNotifier extends ChangeNotifier {
   }
 
   Future<RegulatorDeviceModel?> delete(RegulatorDeviceModel device) async {
-    var repository = RegulatorDeviceRepository();
     var updatedDevice = await repository.delete(device);
     if (updatedDevice != null) {
       _items.removeWhere((d) => d.id == device.id);
@@ -52,7 +50,6 @@ class RegulatorDevicesChangeNotifier extends ChangeNotifier {
   }
 
   Future<RegulatorDeviceModel?> put(RegulatorDeviceModel device) async {
-    var repository = RegulatorDeviceRepository();
     var updatedDevice = await repository.put(device);
     if (updatedDevice != null) {
       _items.removeWhere((d) => d.id == device.id);

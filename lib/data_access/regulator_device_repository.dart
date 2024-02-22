@@ -1,15 +1,16 @@
+import 'package:dio/dio.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/foundation.dart';
 
 import 'app_repository.dart';
 
-class RegulatorDeviceRepository extends AppRepository {
+class RegulatorDeviceRepository {
   static const String endPoint = '/regulator-devices';
+  final Dio httpClient = getIt<AppHttpClientFactory>().httpClient;
 
   Future<List<RegulatorDeviceModel>?> getList() async {
     List<RegulatorDeviceModel>? devices = List.empty(growable: true);
-
-    var httpClient = await getHttpClient();
 
     try {
       var response = await httpClient.get('${RegulatorDeviceRepository.endPoint}/');
@@ -20,15 +21,12 @@ class RegulatorDeviceRepository extends AppRepository {
     } on Exception catch (e) {
       devices = null;
       debugPrint('Exception details:\n $e');
-    } finally {
-      httpClient.close(force: true);
     }
 
     return devices;
   }
 
   Future<RegulatorDeviceModel?> put(RegulatorDeviceModel device) async {
-    var httpClient = await getHttpClient();
     RegulatorDeviceModel? updatedDevice;
 
     try {
@@ -38,15 +36,12 @@ class RegulatorDeviceRepository extends AppRepository {
       }
     } catch (e) {
       debugPrint('Exception details:\n $e');
-    } finally {
-      httpClient.close(force: true);
     }
 
     return updatedDevice;
   }
 
   Future<RegulatorDeviceModel?> post(RegulatorDeviceModel device) async {
-    var httpClient = await getHttpClient();
     RegulatorDeviceModel? updatedDevice;
 
     try {
@@ -56,15 +51,12 @@ class RegulatorDeviceRepository extends AppRepository {
       }
     } catch (e) {
       debugPrint('Exception details:\n $e');
-    } finally {
-      httpClient.close(force: true);
     }
 
     return updatedDevice;
   }
 
   Future<RegulatorDeviceModel?> delete(RegulatorDeviceModel device) async {
-    var httpClient = await getHttpClient();
     RegulatorDeviceModel? updatedDevice;
 
     try {
@@ -74,8 +66,6 @@ class RegulatorDeviceRepository extends AppRepository {
       }
     } catch (e) {
       debugPrint('Exception details:\n $e');
-    } finally {
-      httpClient.close(force: true);
     }
 
     return updatedDevice;
