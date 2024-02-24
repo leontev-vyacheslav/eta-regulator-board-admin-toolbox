@@ -1,19 +1,20 @@
+import 'package:dio/dio.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/access_token_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/foundation.dart';
 
 import 'app_repository.dart';
 
-class AccessTokenRepository extends AppRepository {
+class AccessTokenRepository  {
   static const String endPoint = '/access-token';
+  final Dio httpClient = getIt<AppHttpClientFactory>().httpClient;
 
-  Future<AccessTokenModel?> get(RegulatorDeviceModel device) async {
+  Future<AccessTokenModel?> get(RegulatorDeviceModel device, int duration) async {
     AccessTokenModel? accessToken;
 
-    var httpClient = await getHttpClient();
-
     try {
-      var response = await httpClient.get('${AccessTokenRepository.endPoint}/${device.id}');
+      var response = await httpClient.get('${AccessTokenRepository.endPoint}/${device.id}?duration=$duration');
       if (response.statusCode == 200) {
         accessToken = AccessTokenModel.fromJson(response.data);
       }

@@ -1,3 +1,4 @@
+import 'package:eta_regulator_board_admin_toolbox/components/editors/spin_text_field.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/access_token_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
@@ -9,10 +10,12 @@ import 'package:flutter/services.dart';
 // ignore: must_be_immutable
 class AccessTokenDialog extends AppBaseDialog {
   late TextEditingController? _accessTokenEditingController;
+  late TextEditingController? _durationPeriodEditingController;
   final RegulatorDeviceModel device;
 
   AccessTokenDialog({super.key, required super.context, required super.titleText, required this.device}) : super() {
     _accessTokenEditingController = TextEditingController(text: '');
+    _durationPeriodEditingController = TextEditingController(text: '8');
   }
 
   @override
@@ -43,6 +46,7 @@ class AccessTokenDialog extends AppBaseDialog {
   Widget get content => SizedBox(
       width: 640,
       child: Wrap(runSpacing: 20, children: [
+        SpinTextField(controller: _durationPeriodEditingController, min: 1, max: 12, labelText: 'Duration period'),
         TextField(
           controller: _accessTokenEditingController,
           decoration: InputDecoration(
@@ -61,12 +65,7 @@ class AccessTokenDialog extends AppBaseDialog {
                   ),
                   IconButton(
                     onPressed: () {
-                      if (_accessTokenEditingController!.text.isNotEmpty) {
-                        Clipboard.setData(ClipboardData(text: _accessTokenEditingController!.text)).then((_) {
-                          AppToast.show(context, ToastTypes.success, 'New access token copied',
-                              duration: const Duration(seconds: 2));
-                        });
-                      }
+                      copyToClipboard();
                     },
                     icon: const Icon(Icons.copy),
                   )
@@ -77,9 +76,18 @@ class AccessTokenDialog extends AppBaseDialog {
         ),
       ]));
 
+  void copyToClipboard() {
+    if (_accessTokenEditingController!.text.isNotEmpty) {
+      Clipboard.setData(ClipboardData(text: _accessTokenEditingController!.text)).then((_) {
+        AppToast.show(context, ToastTypes.success, 'New access token copied', duration: const Duration(seconds: 2));
+      });
+    }
+  }
+
   Future<void> _getAccessToken() async {
     var repository = AccessTokenRepository();
-    var accessToken = await repository.get(device);
+    int duration = int.parse(_durationPeriodEditingController!.text);
+    var accessToken = await repository.get(device, duration);
     if (accessToken != null) {
       _accessTokenEditingController!.text = accessToken.token;
     }

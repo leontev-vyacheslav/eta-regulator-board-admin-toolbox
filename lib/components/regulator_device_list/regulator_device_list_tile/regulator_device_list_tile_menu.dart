@@ -135,6 +135,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
   Future<void> _showAccessTokenDialog() async {
     await showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AccessTokenDialog(
             context: context,
@@ -157,8 +158,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
         });
 
     if (dialogResult?.result == ModalResults.ok) {
-      var updatedDevice = await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false)
-          .put(device);
+      var updatedDevice = await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false).put(device);
       if (updatedDevice != null) {
         AppToast.show(context, ToastTypes.success, 'The device ${device.name} successfully updated.');
       } else {
