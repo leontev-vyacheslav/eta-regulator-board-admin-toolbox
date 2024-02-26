@@ -1,3 +1,4 @@
+import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/editors/spin_text_field.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/access_token_repository.dart';
@@ -20,26 +21,22 @@ class AccessTokenDialog extends AppBaseDialog {
 
   @override
   List<Widget> get actions => [
-        ElevatedButton.icon(
-          label: const Text(AppStrings.buttonOk),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-              minimumSize: const Size(120, 40)),
-          icon: const Icon(Icons.check),
-        ),
-        ElevatedButton.icon(
-          label: const Text(AppStrings.buttonCancel),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-              minimumSize: const Size(120, 40)),
-          icon: const Icon(Icons.close),
-        )
+        AppElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const AppElevatedButtonLabel(
+              label: AppStrings.buttonOk,
+              icon: Icons.check,
+            )),
+        AppElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const AppElevatedButtonLabel(
+              label: AppStrings.buttonClose,
+              icon: Icons.close,
+            )),
       ];
 
   @override

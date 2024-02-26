@@ -1,3 +1,4 @@
+import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
@@ -8,15 +9,14 @@ class AboutDialog extends AppBaseDialog {
 
   @override
   List<Widget> get actions => [
-        ElevatedButton.icon(
-          label: const Text(AppStrings.buttonClose),
+        AppElevatedButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          style: ElevatedButton.styleFrom(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+          child: const AppElevatedButtonLabel(
+            label: AppStrings.buttonClose,
+            icon: Icons.close,
           ),
-          icon: const Icon(Icons.close),
         )
       ];
 

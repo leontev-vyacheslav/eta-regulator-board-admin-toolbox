@@ -1,5 +1,6 @@
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
+import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
@@ -73,13 +74,7 @@ class _HomePageState extends State<HomePage> {
                                   Text(AppStrings.menuRefresh)
                                 ]),
                               ),
-                              PopupMenuItem(
-                                  onTap: () {},
-                                  height: 1,
-                                  child: const Divider(
-                                    height: 1,
-                                    thickness: 1,
-                                  )),
+                              const PopupMenuItemDivider(),
                               PopupMenuItem(
                                 onTap: () async {
                                   await _showCreateRegulatorDialog();

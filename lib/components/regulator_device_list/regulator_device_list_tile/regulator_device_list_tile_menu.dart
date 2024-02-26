@@ -5,6 +5,7 @@ import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/deployment_dialog.dart/deployment_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
@@ -16,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../../popup_menu_item_divider.dart';
 
 class RegulatorDeviceListTileMenu extends StatelessWidget {
   final BuildContext context;
@@ -53,13 +56,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
                 await _showDeleteRegulatorDevice();
               },
             ),
-            PopupMenuItem(
-                onTap: () {},
-                height: 1,
-                child: const Divider(
-                  height: 1,
-                  thickness: 1,
-                )),
+            const PopupMenuItemDivider(),
             PopupMenuItem(
               child: const Row(children: [
                 Icon(Icons.qr_code),
@@ -72,13 +69,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
                 await _saveDeviceQrCode();
               },
             ),
-            PopupMenuItem(
-                onTap: () {},
-                height: 1,
-                child: const Divider(
-                  height: 1,
-                  thickness: 1,
-                )),
+            const PopupMenuItemDivider(),
             PopupMenuItem(
               child: const Row(children: [
                 Icon(Icons.key),
@@ -91,10 +82,35 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
                 await _showAccessTokenDialog();
               },
             ),
+            const PopupMenuItemDivider(),
+            PopupMenuItem(
+              child: const Row(children: [
+                Icon(Icons.install_desktop_outlined),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(AppStrings.menuDeploy)
+              ]),
+              onTap: () async {
+                await _showDeployDialog();
+              },
+            ),
           ];
         },
       ),
     );
+  }
+
+  Future<void> _showDeployDialog() async {
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return DeploymentDialog(
+            context: context,
+            titleText: AppStrings.dialogTitleDeploy,
+          );
+        });
   }
 
   Future<void> _showDeleteRegulatorDevice() async {

@@ -29,6 +29,8 @@ class AppStrings {
 
   static const menuEditDevice = 'Edit device';
 
+  static const menuDeploy = 'Deploy';
+
   static const menuRemoveDevice = 'Remove device';
 
   static const menuQRCodeId = 'Device ID QR-code';
@@ -39,6 +41,7 @@ class AppStrings {
 
   static const dialogTitleEditDevice = 'Edit device';
 
-  static const dialogTitleConfirm = 'Confirm';
+  static const dialogTitleDeploy = 'Deployment';
 
+  static const dialogTitleConfirm = 'Confirm';
 }

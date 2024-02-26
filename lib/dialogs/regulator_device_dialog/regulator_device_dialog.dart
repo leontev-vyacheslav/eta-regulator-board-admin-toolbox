@@ -1,3 +1,4 @@
+import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
@@ -15,38 +16,32 @@ class RegulatorDeviceDialog extends AppBaseDialog {
 
   @override
   List<Widget> get actions => [
-        ElevatedButton.icon(
-          label: Text(device!.id.isNotEmpty ? 'UPDATE' : 'CREATE'),
-          onPressed: () async {
-            if (_formKey.currentState != null) {
-              _formKey.currentState!.save();
-            }
+        AppElevatedButton(
+            child: AppElevatedButtonLabel(
+              label: device!.id.isNotEmpty ? 'UPDATE' : 'CREATE',
+              icon: Icons.check,
+              color: AppColors.textAccent,
+            ),
+            onPressed: () async {
+              if (_formKey.currentState != null) {
+                _formKey.currentState!.save();
+              }
 
-            if (!context.mounted) {
-              return;
-            }
-            Navigator.pop<DialogResult>(
-                context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.ok, value: device));
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-            minimumSize: const Size(120, 40),
-            backgroundColor: AppColors.textAccent,
-            foregroundColor: Colors.white,
-          ),
-          icon: const Icon(Icons.check),
-        ),
-        ElevatedButton.icon(
-          label: const Text(AppStrings.buttonCancel),
-          onPressed: () {
-            Navigator.pop<DialogResult<RegulatorDeviceModel?>>(
-                context, DialogResult(result: ModalResults.cancel, value: null));
-          },
-          style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-              minimumSize: const Size(120, 40)),
-          icon: const Icon(Icons.close),
-        )
+              if (!context.mounted) {
+                return;
+              }
+              Navigator.pop<DialogResult>(
+                  context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.ok, value: device));
+            }),
+        AppElevatedButton(
+            onPressed: () {
+              Navigator.pop<DialogResult<RegulatorDeviceModel?>>(
+                  context, DialogResult(result: ModalResults.cancel, value: null));
+            },
+            child: const AppElevatedButtonLabel(
+              label: AppStrings.buttonCancel,
+              icon: Icons.close,
+            ))
       ];
 
   @override
