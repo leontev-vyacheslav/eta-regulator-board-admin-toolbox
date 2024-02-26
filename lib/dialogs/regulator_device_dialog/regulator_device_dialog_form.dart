@@ -33,9 +33,7 @@ class _RegulatorDeviceDialogFormState extends State<RegulatorDeviceDialogForm> {
   @override
   void initState() {
     _createMode = widget.device!.id.isEmpty;
-
     _device = widget.device;
-
     _formKey = widget.formKey;
 
     _idTextEditingController = TextEditingController(text: _device?.id);
@@ -134,5 +132,15 @@ class _RegulatorDeviceDialogFormState extends State<RegulatorDeviceDialogForm> {
             )),
       ),
     ));
+  }
+
+  @override
+  void dispose() {
+    _idTextEditingController?.dispose();
+    _nameTextEditingController?.dispose();
+    _macAddressTextEditingController?.dispose();
+    _masterKeyTextEditingController?.dispose();
+
+    super.dispose();
   }
 }

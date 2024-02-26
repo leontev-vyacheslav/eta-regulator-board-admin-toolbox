@@ -5,6 +5,7 @@ import 'package:eta_regulator_board_admin_toolbox/notifiers/regulator_devices_ch
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class App extends StatefulWidget {
   final SharedPreferences localStorage;
@@ -18,6 +19,7 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
+  IO.Socket? socket;
   ThemeMode _themeMode = ThemeMode.dark;
 
   @override
@@ -25,6 +27,15 @@ class AppState extends State<App> {
     _themeMode = ThemeMode.values.byName(widget.localStorage.getString('theme') ?? 'dark');
 
     super.initState();
+
+    socket = IO.io('http://192.168.0.107:5020', <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+    socket!.connect();
+    socket!.on('message', (data) {
+      debugPrint('Received message: $data');
+    });
   }
 
   ThemeMode get themeMode => _themeMode;
