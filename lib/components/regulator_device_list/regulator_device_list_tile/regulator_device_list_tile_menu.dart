@@ -5,7 +5,6 @@ import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
-import 'package:eta_regulator_board_admin_toolbox/dialogs/deployment_dialog.dart/deployment_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
@@ -18,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../dialogs/deployment_dialog/deployment_dialog.dart';
 import '../../popup_menu_item_divider.dart';
 
 class RegulatorDeviceListTileMenu extends StatelessWidget {
@@ -84,6 +84,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
             ),
             const PopupMenuItemDivider(),
             PopupMenuItem(
+              enabled: PlatformInfo.isDesktopOS,
               child: const Row(children: [
                 Icon(Icons.install_desktop_outlined),
                 SizedBox(
@@ -94,7 +95,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
               onTap: () async {
                 await _showDeployDialog();
               },
-            ),
+            )
           ];
         },
       ),
@@ -109,6 +110,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
           return DeploymentDialog(
             context: context,
             titleText: AppStrings.dialogTitleDeploy,
+            device: device,
           );
         });
   }
