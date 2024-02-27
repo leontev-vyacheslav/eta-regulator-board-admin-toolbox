@@ -6,7 +6,6 @@ Import-Module $PSScriptRoot\deployment_support.ps1 -Force
 
 Clear-Host
 
-Write-Host "==========================================================="
 Write-Host "Check connection with device ${ipaddr} in progress..."
 Write-Host
 # Check connection
@@ -18,4 +17,4 @@ If($testConnectionStatus.Status -ne "Success")
 } else {
     Write-Host "Successful connection to the device ${ipaddr}."
 }
-Write-Host "==========================================================="
+Write-Host

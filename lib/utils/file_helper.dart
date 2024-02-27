@@ -30,4 +30,21 @@ class FileHelper {
       await file.writeAsString(jsonDevices);
     }
   }
+
+  // Future<void> uploadDevices() async {
+  //   var pickerResult = await FilePicker.platform.pickFiles(
+  //       dialogTitle: 'Please select a file:', allowedExtensions: ['json'], allowMultiple: false, type: FileType.custom);
+
+  //   if (pickerResult != null && pickerResult.files.isNotEmpty) {
+  //     var file = File(pickerResult.files[0].path!);
+
+  //     var jsonDevices = await file.readAsString();
+
+  //     if (context.mounted) {
+  //       await App.of(context).localStorage.setString('devices', jsonDevices);
+  //       // ignore: use_build_context_synchronously
+  //       await Navigator.popAndPushNamed(context, '/');
+  //     }
+  //   }
+  // }
 }

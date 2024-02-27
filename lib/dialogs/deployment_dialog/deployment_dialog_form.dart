@@ -19,7 +19,6 @@ class DeploymentDialogForm extends StatefulWidget {
 
 class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   RegulatorDeviceModel? _device;
-
   TextEditingController? _textEditingController;
 
   @override
