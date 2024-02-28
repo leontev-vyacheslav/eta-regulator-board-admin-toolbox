@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 class FileHelper {
   static String fileName = 'devices.json';
@@ -31,20 +33,5 @@ class FileHelper {
     }
   }
 
-  // Future<void> uploadDevices() async {
-  //   var pickerResult = await FilePicker.platform.pickFiles(
-  //       dialogTitle: 'Please select a file:', allowedExtensions: ['json'], allowMultiple: false, type: FileType.custom);
-
-  //   if (pickerResult != null && pickerResult.files.isNotEmpty) {
-  //     var file = File(pickerResult.files[0].path!);
-
-  //     var jsonDevices = await file.readAsString();
-
-  //     if (context.mounted) {
-  //       await App.of(context).localStorage.setString('devices', jsonDevices);
-  //       // ignore: use_build_context_synchronously
-  //       await Navigator.popAndPushNamed(context, '/');
-  //     }
-  //   }
-  // }
+  
 }

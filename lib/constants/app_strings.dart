@@ -15,9 +15,9 @@ class AppStrings {
 
   static const buttonClose = 'CLOSE';
 
-  static const menuDownload = 'Download';
+  static const menuDownload = 'Download database';
 
-  static const menuUpload = 'Upload';
+  static const menuUpload = 'Get device app package';
 
   static const menuAbout = 'About';
 

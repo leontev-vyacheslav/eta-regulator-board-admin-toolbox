@@ -1,9 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'dart:core';
+import 'package:collection/collection.dart';
 
 class DeploymentDialogForm extends StatefulWidget {
   final RegulatorDeviceModel device;
@@ -20,6 +24,10 @@ class DeploymentDialogForm extends StatefulWidget {
 class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   RegulatorDeviceModel? _device;
   TextEditingController? _textEditingController;
+  ScrollController textFieldScrollController = ScrollController();
+  List<String> deployments = [];
+  Process? _process;
+  UniqueKey _menuKey = UniqueKey();
 
   @override
   void initState() {
@@ -45,6 +53,8 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
                   'Deployment log',
                 )),
                 PopupMenuButton(
+                  key: _menuKey,
+                  enabled: false,
                   itemBuilder: (context) {
                     return [
                       PopupMenuItem(
@@ -59,6 +69,19 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
                           Text('Check connection')
                         ]),
                       ),
+                      const PopupMenuItemDivider(),
+                      PopupMenuItem(
+                        onTap: () async {
+                          await _deploy();
+                        },
+                        child: Row(children: [
+                          const Icon(Icons.archive_outlined),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text('Deploy to ${_device?.name}')
+                        ]),
+                      ),
                     ];
                   },
                 ),
@@ -68,13 +91,20 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
               width: 640,
               height: 200,
               child: TextField(
-                readOnly: true,
                 decoration: const InputDecoration(fillColor: Colors.black, filled: true),
-                style: const TextStyle(fontFamily: 'Consolas', fontSize: 14, backgroundColor: Colors.black),
+                style: const TextStyle(
+                  fontFamily: 'Consolas',
+                  fontSize: 14,
+                  backgroundColor: Colors.black,
+                ),
                 controller: _textEditingController!,
+                scrollController: textFieldScrollController,
                 maxLines: null, // Set this
                 expands: true, // and this
                 keyboardType: TextInputType.multiline,
+                onChanged: (value) {
+                  textFieldScrollController.jumpTo(textFieldScrollController.position.maxScrollExtent);
+                },
               ),
             ),
           ],
@@ -84,15 +114,62 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   }
 
   Future<void> _checkConnection() async {
-    _textEditingController?.text = '';
-    var scriptPath = kDebugMode ? 'assets/' : 'data/flutter_assets/assets/';
+    if (_process != null) {
+      _process!.kill();
+    }
 
-    var process = await Process.start(
+    _textEditingController?.text = '';
+    var assetsPath = kDebugMode ? 'assets' : 'data/flutter_assets/assets';
+
+    _process = await Process.start(
       'pwsh.exe',
-      ['${scriptPath}check_connection.ps1', '-ipaddr', _device!.name],
+      ['$assetsPath/deployment/check_connection.ps1', '-ipaddr', _device!.name],
     );
 
-    process.stdout.transform(utf8.decoder).listen((data) {
+    _process!.stdout.transform(utf8.decoder).listen((data) {
+      _textEditingController?.text += data;
+    });
+    _process!.stderr.transform(utf8.decoder).listen((data) {
+      _textEditingController?.text += data;
+    });
+  }
+
+  Future<void> _deploy() async {
+    if (_process != null) {
+      _process!.kill();
+    }
+
+    _textEditingController?.text = '';
+    var assetsPath = kDebugMode ? 'assets' : 'data/flutter_assets/assets';
+
+    var distributableDir = Directory('$assetsPath/deployment/distributable');
+
+    var distroFolder = distributableDir
+        .listSync()
+        .map((d) {
+          var folderName = basenameWithoutExtension(d.path);
+          return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
+        })
+        .sortedBy((element) => element.keys.first)
+        .last;
+
+    _process = await Process.start(
+      'pwsh.exe',
+      [
+        '$assetsPath/deployment/deploy.ps1',
+        '-ipaddr',
+        _device!.name,
+        '-root',
+        '$assetsPath/deployment',
+        '-distro',
+        distroFolder.entries.first.value as String,
+      ],
+    );
+    _process!.stdout.transform(utf8.decoder).listen((data) {
+      _textEditingController?.text += data;
+    });
+
+    _process!.stderr.transform(utf8.decoder).listen((data) {
       _textEditingController?.text += data;
     });
   }

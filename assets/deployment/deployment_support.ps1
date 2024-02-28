@@ -9,6 +9,20 @@ $buildDateTimeMark = Get-Date -Format "yyyyMMdd-HHmmss"
 $WEB_API_APP_NAME = "eta-regulator-board-web-api"
 $WEB_UI_APP_NAME = "eta-regulator-board-web-ui"
 
+function CheckConnection ([string] $ipaddr) {
+    Write-Host "Check connection with device ${ipaddr} in progress..."
+    Write-Host
+    # Check connection
+    $testConnectionStatus = Test-Connection -TargetName $ipaddr -IPv4 -Count 5
+    If($testConnectionStatus.Status -ne "Success")
+    {
+        Write-Host "ERROR! Failed to connect to the device ${ipaddr}."
+        Exit 1
+    } else {
+        Write-Host "Successful connection to the device ${ipaddr}."
+    }
+    Write-Host
+}
 
 function Sync-DateTime ([string] $ipaddr) {
     Write-Host "Sync date&time according to the device timezone (${utcNow})..." -ForegroundColor Green

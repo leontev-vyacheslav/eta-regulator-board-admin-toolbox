@@ -27,6 +27,7 @@ class _RegulatorDeviceListState extends State<RegulatorDeviceList> {
 
     return Expanded(
       child: ListView(
+        
         children: _getListItems(context, devices),
       ),
     );

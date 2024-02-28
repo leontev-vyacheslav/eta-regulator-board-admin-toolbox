@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,18 @@ class AppExitDialog extends AppBaseDialog {
                 SystemNavigator.pop();
               }
             },
-            child: const Text(AppStrings.buttonOk)),
+            child: const AppElevatedButtonLabel(
+              label: AppStrings.buttonOk,
+              icon: Icons.check,
+              color: AppColors.textAccent,
+            )),
         AppElevatedButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text(AppStrings.buttonCancel))
+            child: const AppElevatedButtonLabel(
+              label: AppStrings.buttonCancel,
+              icon: Icons.close,
+            ))
       ];
 }

@@ -26,6 +26,9 @@ dependencies:
   fluttertoast: ^8.2.4
   get_it: ^7.6.7
   socket_io_client: ^2.0.3+1
+  archive: ^3.4.10
+  path: ^1.9.0
+  collection: ^1.18.0
 
 
 dev_dependencies:

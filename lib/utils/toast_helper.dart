@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 enum ToastTypes { success, info, error, warning }
 
 class AppToast {
-  static List<Color?> toastColors = [Colors.green[500], Colors.blue[300], Colors.red[500], Colors.yellow[500]];
+  static List<Color?> toastColors = [Colors.green[500], Colors.blue[300], Colors.red[500], Colors.orange[800]];
   static List<IconData> icons = [Icons.check, Icons.info, Icons.error, Icons.warning];
 
   static void show(BuildContext context, ToastTypes type, String text,

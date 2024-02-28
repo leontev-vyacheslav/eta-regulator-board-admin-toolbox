@@ -1,10 +1,11 @@
 param(
-    [string]$ipaddr
+    [string]$ipaddr,
+    [string]$distro,
+    [string]$root
 )
 
 Import-Module $PSScriptRoot\deployment_support.ps1 -Force
 
-Clear-Host
 
 $APP_ROOT = "/web-ui"
 
@@ -16,6 +17,7 @@ If ($testConnectionStatus.Status -ne "Success") {
     Exit 1
 }
 Write-Host "Connection with the device ${ipaddr} was established!"
+Write-Host
 Start-Sleep -Seconds 2
 
 # Sync date&time on OpenWrt OS
@@ -29,6 +31,7 @@ if ($hasError) {
     # exit
 }
 Start-Sleep -Seconds 2
+Write-Host
 
 # Initializing the app folders
 Initialize-AppFolders -ipaddr $ipaddr -AppRootFolders $APP_ROOT
@@ -43,27 +46,42 @@ if ($hasError) {
 Start-Sleep -Seconds 2
 Write-Host
 
+
+
 # Deleting JS and CSS maps files
 Write-Host "Deleting JS and CSS source maps files..." -ForegroundColor Green
-Get-ChildItem -Path "./build" -Recurse -Include "*.map" | Remove-Item -Force -Recurse
+Get-ChildItem -Path "./${root}/distributable/${distro}/build" -Recurse -Include "*.map" | Remove-Item -Force -Recurse
 Start-Sleep -Seconds 2
 Write-Host
 
 # Copying files
 Write-Host "Copying updated files..." -ForegroundColor Green
-$remoteOutput = scp -r ui_distr ${ACCOUNT}@${ipaddr}:${WORKSPACE_ROOT}${APP_ROOT} *>&1
+$remoteOutput = scp -r ${root}/distributable/${distro}/build ${ACCOUNT}@${ipaddr}:${WORKSPACE_ROOT}${APP_ROOT} *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
-    Exit 1
+
+    # Exit 1
 }
 Start-Sleep -Seconds 2
 Write-Host
 
 # Updating UHTTPD configuration
 Write-Host "Updating UHTTPD configuration for '$WEB_UI_APP_NAME'..." -ForegroundColor Green
-$remoteOutput = scp ../.deployment/configs/uhttpd ${ACCOUNT}@${ipaddr}:/etc/config/uhttpd *>&1
+$remoteOutput = scp ${root}/configs/uhttpd ${ACCOUNT}@${ipaddr}:/etc/config/uhttpd *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
     Exit 1
 }
 Start-Sleep -Seconds 2
+Write-Host
+
+Write-Host "Starting UHTTPD web server with '$WEB_UI_APP_NAME'..." -ForegroundColor Green
+$remoteOutput = ssh ${ACCOUNT}@${IPADDR} '/etc/init.d/uhttpd start' *>&1
+$hasError = Find-ExternalError -remoteOutput $remoteOutput
+if ($hasError) {
+    Exit 1
+}
+Start-Sleep -Seconds 2
+
+Write-Host
+Write-Host "CONGRATULATION! Deployment on $ipaddr was suiccessfully complete!"
