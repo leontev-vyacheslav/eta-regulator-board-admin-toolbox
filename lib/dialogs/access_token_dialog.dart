@@ -14,7 +14,13 @@ class AccessTokenDialog extends AppBaseDialog {
   late TextEditingController? _durationPeriodEditingController;
   final RegulatorDeviceModel device;
 
-  AccessTokenDialog({super.key, required super.context, required super.titleText, required this.device}) : super() {
+  AccessTokenDialog(
+      {super.key,
+      required super.context,
+      required super.titleText,
+      super.titleIcon = Icons.key_outlined,
+      required this.device})
+      : super() {
     _accessTokenEditingController = TextEditingController(text: '');
     _durationPeriodEditingController = TextEditingController(text: '8');
   }

@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 class AppBaseDialog extends AlertDialog {
   final BuildContext context;
   final String titleText;
+  final IconData? titleIcon;
 
-  const AppBaseDialog({required this.context, required this.titleText, super.key, super.actions, super.content});
+  const AppBaseDialog(
+      {required this.context, required this.titleText, this.titleIcon, super.key, super.actions, super.content});
 
   @override
   EdgeInsetsGeometry? get titlePadding => const EdgeInsets.fromLTRB(20, 15, 20, 15);
@@ -19,8 +21,18 @@ class AppBaseDialog extends AlertDialog {
 
   @override
   Widget get title => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
+          titleIcon != null
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 8, 15, 5),
+                  child: Icon(
+                    titleIcon,
+                    size: 26,
+                  ),
+                )
+              : const SizedBox.shrink(),
           Expanded(
               child: Text(
             titleText,

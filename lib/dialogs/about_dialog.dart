@@ -5,7 +5,8 @@ import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:flutter/material.dart';
 
 class AboutDialog extends AppBaseDialog {
-  const AboutDialog({super.key, required super.context, required super.titleText});
+  const AboutDialog(
+      {super.key, required super.context, required super.titleText, super.titleIcon = Icons.app_registration_outlined});
 
   @override
   List<Widget> get actions => [

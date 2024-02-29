@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
         builder: (BuildContext context) {
           return RegulatorDeviceDialog(
             context: context,
-            titleText: AppStrings.dialogTitleEditDevice,
+            titleText: AppStrings.dialogTitleCreateDevice,
             device: RegulatorDeviceModel(
                 id: '',
                 name: 'Omega-XXXX',

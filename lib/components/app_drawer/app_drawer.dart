@@ -29,8 +29,10 @@ class AppDrawer extends Drawer {
               visualDensity: const VisualDensity(vertical: 2),
               onTap: () async {
                 await FileHelper.downloadDevices().then((value) {
-                  AppToast.show(
-                      context, ToastTypes.success, 'Regulator device list saved to a json file successfully.');
+                  if (value) {
+                    AppToast.show(
+                        context, ToastTypes.success, 'Regulator device list saved to a json file successfully.');
+                  }
                 });
               }),
           ListTile(
@@ -82,7 +84,8 @@ class AppDrawer extends Drawer {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return about_dialog.AboutDialog(context: context, titleText: AppStrings.menuAbout);
+        return about_dialog.AboutDialog(
+            context: context, titleText: AppStrings.menuAbout, titleIcon: Icons.app_registration);
       },
     );
   }

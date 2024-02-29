@@ -7,6 +7,7 @@ param(
 Import-Module $PSScriptRoot\deployment_support.ps1 -Force
 
 
+$WEB_UI_APP_NAME = "eta-regulator-board-web-ui"
 $APP_ROOT = "/web-ui"
 
 # Check connection
@@ -37,7 +38,7 @@ Write-Host
 Initialize-AppFolders -ipaddr $ipaddr -AppRootFolders $APP_ROOT
 
 # Clear app forlder
-Write-Host "Removing orignal files '$WEB_UI_APP_NAME'..." -ForegroundColor Green
+Write-Host "Removing orignal files '$WEB_UI_APP_NAME'..."
 $remoteOutput = ssh ${ACCOUNT}@${ipaddr} "rm -rf ${WORKSPACE_ROOT}${APP_ROOT}/" *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
@@ -49,24 +50,23 @@ Write-Host
 
 
 # Deleting JS and CSS maps files
-Write-Host "Deleting JS and CSS source maps files..." -ForegroundColor Green
+Write-Host "Deleting JS and CSS source maps files..."
 Get-ChildItem -Path "./${root}/distributable/${distro}/build" -Recurse -Include "*.map" | Remove-Item -Force -Recurse
 Start-Sleep -Seconds 2
 Write-Host
 
 # Copying files
-Write-Host "Copying updated files..." -ForegroundColor Green
+Write-Host "Copying updated files..."
 $remoteOutput = scp -r ${root}/distributable/${distro}/build ${ACCOUNT}@${ipaddr}:${WORKSPACE_ROOT}${APP_ROOT} *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
-
-    # Exit 1
+    Exit 1
 }
 Start-Sleep -Seconds 2
 Write-Host
 
 # Updating UHTTPD configuration
-Write-Host "Updating UHTTPD configuration for '$WEB_UI_APP_NAME'..." -ForegroundColor Green
+Write-Host "Updating UHTTPD configuration for '$WEB_UI_APP_NAME'..."
 $remoteOutput = scp ${root}/configs/uhttpd ${ACCOUNT}@${ipaddr}:/etc/config/uhttpd *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
@@ -75,7 +75,7 @@ if ($hasError) {
 Start-Sleep -Seconds 2
 Write-Host
 
-Write-Host "Starting UHTTPD web server with '$WEB_UI_APP_NAME'..." -ForegroundColor Green
+Write-Host "Starting UHTTPD web server with '$WEB_UI_APP_NAME'..."
 $remoteOutput = ssh ${ACCOUNT}@${IPADDR} '/etc/init.d/uhttpd start' *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {

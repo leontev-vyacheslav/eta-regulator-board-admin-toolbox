@@ -9,7 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppExitDialog extends AppBaseDialog {
-  const AppExitDialog({super.key, required super.context, required super.titleText});
+  const AppExitDialog(
+      {super.key, required super.context, required super.titleText, super.titleIcon = Icons.question_answer_outlined});
 
   @override
   Widget? get content => const SizedBox(width: 480, child: Text(AppStrings.confirmAppExit));

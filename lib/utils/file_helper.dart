@@ -1,17 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:archive/archive.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 class FileHelper {
   static String fileName = 'devices.json';
 
-  static Future<void> downloadDevices() async {
+  static Future<bool> downloadDevices() async {
     String? outputFile;
     if (PlatformInfo.isDesktopOS) {
       outputFile = await FilePicker.platform.saveFile(
@@ -30,8 +28,10 @@ class FileHelper {
     if (outputFile != null) {
       var file = File(outputFile);
       await file.writeAsString(jsonDevices);
-    }
-  }
 
-  
+      return true;
+    }
+
+    return false;
+  }
 }

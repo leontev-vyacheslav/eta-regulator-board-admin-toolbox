@@ -23,7 +23,7 @@ void main() async {
   if (PlatformInfo.isDesktopOS) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
-      size: Size(800, 600),
+      size: Size(1024, 768),
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,

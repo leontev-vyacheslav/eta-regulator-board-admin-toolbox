@@ -41,6 +41,8 @@ class AppStrings {
 
   static const dialogTitleEditDevice = 'Edit device';
 
+  static const dialogTitleCreateDevice = 'Create new device';
+
   static const dialogTitleDeploy = 'Deployment';
 
   static const dialogTitleConfirm = 'Confirm';

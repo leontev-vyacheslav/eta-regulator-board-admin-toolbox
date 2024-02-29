@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
@@ -28,75 +29,82 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var menuItems = [
+      PopupMenuItem(
+        child: const Row(children: [
+          Icon(Icons.edit_outlined),
+          SizedBox(
+            width: 10,
+          ),
+          Text(AppStrings.menuEditDevice)
+        ]),
+        onTap: () async {
+          await _showRegulatorDeviceDialog();
+        },
+      ),
+      PopupMenuItem(
+        child: const Row(children: [
+          Icon(Icons.delete_outline),
+          SizedBox(
+            width: 10,
+          ),
+          Text(AppStrings.menuRemoveDevice)
+        ]),
+        onTap: () async {
+          await _showDeleteRegulatorDevice();
+        },
+      ),
+      const PopupMenuItemDivider(),
+      PopupMenuItem(
+        child: const Row(children: [
+          Icon(Icons.qr_code),
+          SizedBox(
+            width: 10,
+          ),
+          Text(AppStrings.menuQRCodeId)
+        ]),
+        onTap: () async {
+          await _saveDeviceQrCode();
+        },
+      ),
+      const PopupMenuItemDivider(),
+      PopupMenuItem(
+        child: const Row(children: [
+          Icon(Icons.key),
+          SizedBox(
+            width: 10,
+          ),
+          Text(AppStrings.menuCreateAccessToken)
+        ]),
+        onTap: () async {
+          await _showAccessTokenDialog();
+        },
+      ),
+    ];
+
+    if (PlatformInfo.isDesktopOS) {
+      menuItems.addAll([
+        const PopupMenuItemDivider(),
+        PopupMenuItem(
+          enabled: PlatformInfo.isDesktopOS,
+          child: const Row(children: [
+            Icon(Icons.install_desktop_outlined),
+            SizedBox(
+              width: 10,
+            ),
+            Text(AppStrings.menuDeploy)
+          ]),
+          onTap: () async {
+            await _showDeployDialog();
+          },
+        )
+      ]);
+    }
+
     return Consumer<RegulatorDevicesChangeNotifier>(
       builder: (context, value, child) => PopupMenuButton(
         itemBuilder: (context) {
-          return [
-            PopupMenuItem(
-              child: const Row(children: [
-                Icon(Icons.edit_outlined),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuEditDevice)
-              ]),
-              onTap: () async {
-                await _showRegulatorDeviceDialog();
-              },
-            ),
-            PopupMenuItem(
-              child: const Row(children: [
-                Icon(Icons.delete_outline),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuRemoveDevice)
-              ]),
-              onTap: () async {
-                await _showDeleteRegulatorDevice();
-              },
-            ),
-            const PopupMenuItemDivider(),
-            PopupMenuItem(
-              child: const Row(children: [
-                Icon(Icons.qr_code),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuQRCodeId)
-              ]),
-              onTap: () async {
-                await _saveDeviceQrCode();
-              },
-            ),
-            const PopupMenuItemDivider(),
-            PopupMenuItem(
-              child: const Row(children: [
-                Icon(Icons.key),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuCreateAccessToken)
-              ]),
-              onTap: () async {
-                await _showAccessTokenDialog();
-              },
-            ),
-            const PopupMenuItemDivider(),
-            PopupMenuItem(
-              enabled: PlatformInfo.isDesktopOS,
-              child: const Row(children: [
-                Icon(Icons.install_desktop_outlined),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(AppStrings.menuDeploy)
-              ]),
-              onTap: () async {
-                await _showDeployDialog();
-              },
-            )
-          ];
+          return menuItems;
         },
       ),
     );
@@ -121,6 +129,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
         builder: (BuildContext context) {
           return AppBaseDialog(
             titleText: AppStrings.dialogTitleConfirm,
+            titleIcon: Icons.question_answer_outlined,
             context: context,
             actions: [
               AppElevatedButton(
@@ -128,13 +137,20 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
                     Navigator.pop<DialogResult>(
                         context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.ok, value: device));
                   },
-                  child: const Text(AppStrings.buttonOk)),
+                  child: const AppElevatedButtonLabel(
+                    label: AppStrings.buttonOk,
+                    icon: Icons.check,
+                    color: AppColors.textAccent,
+                  )),
               AppElevatedButton(
                   onPressed: () {
                     Navigator.pop<DialogResult>(
                         context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.cancel));
                   },
-                  child: const Text(AppStrings.buttonCancel))
+                  child: const AppElevatedButtonLabel(
+                    label: AppStrings.buttonCancel,
+                    icon: Icons.close,
+                  ))
             ],
             content: const SizedBox(width: 480, child: Text(AppStrings.confirmRemoveDevice)),
           );

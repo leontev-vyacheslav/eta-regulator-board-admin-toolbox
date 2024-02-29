@@ -11,9 +11,11 @@ import 'package:collection/collection.dart';
 
 class DeploymentDialogForm extends StatefulWidget {
   final RegulatorDeviceModel device;
+  final BuildContext context;
 
   const DeploymentDialogForm({
     super.key,
+    required this.context,
     required this.device,
   });
 
@@ -23,20 +25,103 @@ class DeploymentDialogForm extends StatefulWidget {
 
 class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   RegulatorDeviceModel? _device;
-  TextEditingController? _textEditingController;
-  ScrollController textFieldScrollController = ScrollController();
-  List<String> deployments = [];
   Process? _process;
-  UniqueKey _menuKey = UniqueKey();
+  bool _menuEnable = true;
+
+  final TextEditingController _textEditingController = TextEditingController();
+  final ScrollController _textFieldScrollController = ScrollController();
+  final String _deploymentPath = kDebugMode ? 'assets/deployment' : 'data/flutter_assets/assets/deployment';
 
   @override
   void initState() {
     _device = widget.device;
-    _textEditingController = TextEditingController();
-
     _checkConnection();
-
     super.initState();
+  }
+
+  Widget buildPopupMenu() {
+    return Row(
+      children: [
+        Expanded(
+            child: Text(
+          'Deployment log of "${_device!.name}" device:',
+        )),
+        PopupMenuButton(
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                enabled: _menuEnable,
+                onTap: () async {
+                  await _checkConnection();
+                },
+                child: const Row(children: [
+                  Icon(Icons.wifi),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Check connection')
+                ]),
+              ),
+              const PopupMenuItemDivider(),
+              PopupMenuItem(
+                enabled: _menuEnable,
+                onTap: () async {
+                  await _deploy('web_ui');
+                },
+                child: const Row(children: [
+                  Icon(Icons.web_outlined),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Deploy Web UI')
+                ]),
+              ),
+              PopupMenuItem(
+                enabled: _menuEnable,
+                onTap: () async {
+                  await _deploy('web_api');
+                },
+                child: const Row(children: [
+                  Icon(Icons.api_outlined),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Deploy Web API')
+                ]),
+              ),
+              const PopupMenuItemDivider(),
+              PopupMenuItem(
+                enabled: _menuEnable,
+                onTap: () async {
+                  await _deployAll();
+                },
+                child: const Row(children: [
+                  Icon(Icons.install_desktop_outlined),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Deploy all')
+                ]),
+              ),
+              const PopupMenuItemDivider(),
+              PopupMenuItem(
+                enabled: !_menuEnable,
+                onTap: () {
+                  _stopScriptProcess();
+                },
+                child: const Row(children: [
+                  Icon(Icons.back_hand_outlined),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Stop deployment')
+                ]),
+              )
+            ];
+          },
+        ),
+      ],
+    );
   }
 
   @override
@@ -46,65 +131,22 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
         padding: const EdgeInsets.only(bottom: 20),
         child: Column(
           children: [
-            Row(
-              children: [
-                const Expanded(
-                    child: Text(
-                  'Deployment log',
-                )),
-                PopupMenuButton(
-                  key: _menuKey,
-                  enabled: false,
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        onTap: () async {
-                          await _checkConnection();
-                        },
-                        child: const Row(children: [
-                          Icon(Icons.wifi),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('Check connection')
-                        ]),
-                      ),
-                      const PopupMenuItemDivider(),
-                      PopupMenuItem(
-                        onTap: () async {
-                          await _deploy();
-                        },
-                        child: Row(children: [
-                          const Icon(Icons.archive_outlined),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text('Deploy to ${_device?.name}')
-                        ]),
-                      ),
-                    ];
-                  },
-                ),
-              ],
-            ),
+            buildPopupMenu(),
             SizedBox(
               width: 640,
               height: 200,
               child: TextField(
-                decoration: const InputDecoration(fillColor: Colors.black, filled: true),
-                style: const TextStyle(
-                  fontFamily: 'Consolas',
-                  fontSize: 14,
-                  backgroundColor: Colors.black,
-                ),
-                controller: _textEditingController!,
-                scrollController: textFieldScrollController,
+                decoration: InputDecoration(fillColor: Theme.of(widget.context).primaryColor, filled: true),
+                style: TextStyle(
+                    fontFamily: 'Consolas',
+                    fontSize: 14,
+                    backgroundColor: Theme.of(widget.context).primaryColor,
+                    color: Colors.white70),
+                controller: _textEditingController,
+                scrollController: _textFieldScrollController,
                 maxLines: null, // Set this
                 expands: true, // and this
                 keyboardType: TextInputType.multiline,
-                onChanged: (value) {
-                  textFieldScrollController.jumpTo(textFieldScrollController.position.maxScrollExtent);
-                },
               ),
             ),
           ],
@@ -113,39 +155,17 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     );
   }
 
-  Future<void> _checkConnection() async {
-    if (_process != null) {
-      _process!.kill();
-    }
-
-    _textEditingController?.text = '';
-    var assetsPath = kDebugMode ? 'assets' : 'data/flutter_assets/assets';
-
-    _process = await Process.start(
-      'pwsh.exe',
-      ['$assetsPath/deployment/check_connection.ps1', '-ipaddr', _device!.name],
-    );
-
-    _process!.stdout.transform(utf8.decoder).listen((data) {
-      _textEditingController?.text += data;
-    });
-    _process!.stderr.transform(utf8.decoder).listen((data) {
-      _textEditingController?.text += data;
-    });
+  void _stdStreamListener(String text) {
+    text = text.replaceAll(RegExp('\x1b[[0-9;]*m'), '');
+    _textEditingController.text += text;
+    _textFieldScrollController.jumpTo(_textFieldScrollController.position.maxScrollExtent);
   }
 
-  Future<void> _deploy() async {
-    if (_process != null) {
-      _process!.kill();
-    }
-
-    _textEditingController?.text = '';
-    var assetsPath = kDebugMode ? 'assets' : 'data/flutter_assets/assets';
-
-    var distributableDir = Directory('$assetsPath/deployment/distributable');
-
-    var distroFolder = distributableDir
+  Map<String, Object> _getLastDistributable(String appName) {
+    var distributableDir = Directory('$_deploymentPath/distributable');
+    var distroFolderInfo = distributableDir
         .listSync()
+        .where((d) => d.path.startsWith('eta_regulator_board_$appName'))
         .map((d) {
           var folderName = basenameWithoutExtension(d.path);
           return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
@@ -153,24 +173,65 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
         .sortedBy((element) => element.keys.first)
         .last;
 
-    _process = await Process.start(
-      'pwsh.exe',
-      [
-        '$assetsPath/deployment/deploy.ps1',
-        '-ipaddr',
-        _device!.name,
-        '-root',
-        '$assetsPath/deployment',
-        '-distro',
-        distroFolder.entries.first.value as String,
-      ],
-    );
-    _process!.stdout.transform(utf8.decoder).listen((data) {
-      _textEditingController?.text += data;
+    return distroFolderInfo;
+  }
+
+  void _stopScriptProcess() {
+    if (_process != null) {
+      _process!.kill();
+      _process = null;
+    }
+  }
+
+  Future<void> _startScriptProcess(List<String> args, {bool clearLog = true}) async {
+    if (_process != null) {
+      _process!.kill();
+      _process = null;
+    }
+
+    if (clearLog) {
+      _textEditingController.text = '';
+    }
+
+    setState(() {
+      _menuEnable = false;
     });
 
-    _process!.stderr.transform(utf8.decoder).listen((data) {
-      _textEditingController?.text += data;
+    _process = await Process.start(
+      'pwsh.exe',
+      args,
+    );
+
+    _process!.stdout.transform(utf8.decoder).listen(_stdStreamListener);
+    _process!.stderr.transform(utf8.decoder).listen(_stdStreamListener);
+
+    _process!.exitCode.then((value) {
+      setState(() {
+        _menuEnable = true;
+      });
     });
+  }
+
+  Future<void> _checkConnection() async {
+    await _startScriptProcess(['$_deploymentPath/check_connection.ps1', '-ipaddr', _device!.name]);
+  }
+
+  Future<void> _deploy(String appName, {bool clearLog = true}) async {
+    var distroFolder = _getLastDistributable(appName);
+
+    _startScriptProcess([
+      '$_deploymentPath/deploy_$appName.ps1',
+      '-ipaddr',
+      _device!.name,
+      '-root',
+      _deploymentPath,
+      '-distro',
+      distroFolder.entries.first.value as String,
+    ], clearLog: clearLog);
+  }
+
+  Future<void> _deployAll() async {
+    await _deploy('web_ui', clearLog: false);
+    await _deploy('web_api', clearLog: false);
   }
 }

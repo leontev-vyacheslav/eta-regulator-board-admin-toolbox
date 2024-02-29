@@ -12,7 +12,8 @@ class RegulatorDeviceDialog extends AppBaseDialog {
   final RegulatorDeviceModel? device;
   final _formKey = GlobalKey<FormState>();
 
-  RegulatorDeviceDialog({super.key, required super.context, required super.titleText, this.device});
+  RegulatorDeviceDialog(
+      {super.key, required super.context, required super.titleText, super.titleIcon = Icons.devices, this.device});
 
   @override
   List<Widget> get actions => [

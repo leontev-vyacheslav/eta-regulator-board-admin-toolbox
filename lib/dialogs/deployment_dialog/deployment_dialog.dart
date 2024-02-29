@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
@@ -12,7 +11,12 @@ class DeploymentDialog extends AppBaseDialog {
   // IO.Socket? socket;
   final RegulatorDeviceModel device;
 
-  DeploymentDialog({super.key, required super.context, required super.titleText, required this.device}) {
+  DeploymentDialog(
+      {super.key,
+      required super.context,
+      required super.titleText,
+      super.titleIcon = Icons.install_desktop_outlined,
+      required this.device}) {
     // socket = IO.io('http://192.168.0.107:5020', <String, dynamic>{
     //     'transports': ['websocket'],
     //     'autoConnect': false,
@@ -25,7 +29,10 @@ class DeploymentDialog extends AppBaseDialog {
   // });
 
   @override
-  Widget? get content => DeploymentDialogForm(device: device);
+  Widget? get content => DeploymentDialogForm(
+        device: device,
+        context: context,
+      );
 
   @override
   List<Widget>? get actions => [
