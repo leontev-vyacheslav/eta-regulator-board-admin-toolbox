@@ -14,7 +14,7 @@ class AppTitleBar extends StatelessWidget {
 
   Widget _getAppBarRow() {
     return Padding(
-      padding: PlatformInfo.isDesktopOS ? const EdgeInsets.fromLTRB(10, 10, 20, 10) : const EdgeInsets.only(top: 20),
+      padding: PlatformInfo.isDesktopOS() ? const EdgeInsets.fromLTRB(10, 10, 20, 10) : const EdgeInsets.only(top: 20),
       child: Row(children: [
         IconButton(
             iconSize: 32,
@@ -28,10 +28,10 @@ class AppTitleBar extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: AppColors.textAccent,
-                fontSize: PlatformInfo.isDesktopOS ? 22 : 16,
+                fontSize: PlatformInfo.isDesktopOS() ? 22 : 16,
               )),
         ),
-        PlatformInfo.isDesktopOS
+        PlatformInfo.isDesktopOS()
             ? IconButton(
                 iconSize: 32,
                 icon: const Icon(Icons.close),
@@ -52,7 +52,7 @@ class AppTitleBar extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-            child: PlatformInfo.isDesktopOS
+            child: PlatformInfo.isDesktopOS()
                 ? WindowDragArea(
                     maximizable: true,
                     child: _getAppBarRow(),

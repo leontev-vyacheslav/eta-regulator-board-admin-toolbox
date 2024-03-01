@@ -4,21 +4,21 @@ $WORKSPACE_ROOT = "/mnt/mmcblk0p1/eta-regulator-board" # /home/eta-regulator-boa
 $utcNow = Get-Date -Format "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'" -AsUTC
 $buildDateTimeMark = Get-Date -Format "yyyyMMdd-HHmmss"
 
-$WEB_API_APP_NAME = "eta-regulator-board-web-api"
-
 
 function CheckConnection ([string] $ipaddr) {
     Write-Host "Check connection with device ${ipaddr} in progress..."
     Write-Host
     # Check connection
+
     $testConnectionStatus = Test-Connection -TargetName $ipaddr -IPv4 -Count 5
-    If($testConnectionStatus.Status -ne "Success")
-    {
+    If ($testConnectionStatus.Status -ne "Success") {
         Write-Host "ERROR! Failed to connect to the device ${ipaddr}."
-        Exit 1
-    } else {
+        Exit 0
+    }
+    else {
         Write-Host "Successful connection to the device ${ipaddr}."
     }
+
     Write-Host
 }
 

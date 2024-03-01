@@ -20,7 +20,7 @@ void configureDependencies() {
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  if (PlatformInfo.isDesktopOS) {
+  if (PlatformInfo.isDesktopOS()) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
       size: Size(1024, 768),
@@ -37,6 +37,7 @@ void main() async {
   }
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   configureDependencies();
   runApp(App(localStorage: await SharedPreferences.getInstance()));
 }

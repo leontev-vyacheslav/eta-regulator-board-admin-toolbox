@@ -16,9 +16,9 @@ class AppHttpClientFactory {
 
     if (kDebugMode) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      if (PlatformInfo.isDesktopOS) {
+      if (PlatformInfo.isDesktopOS() || kIsWeb) {
         baseUrl = debugLocalBaseUrl;
-      } else if (Platform.isAndroid) {
+      } else if (!kIsWeb && Platform.isAndroid) {
         deviceInfo.androidInfo.then((androidInfo) {
           baseUrl = androidInfo.isPhysicalDevice ? debugLocalBaseUrl : debugLocalBaseUrl;
         });

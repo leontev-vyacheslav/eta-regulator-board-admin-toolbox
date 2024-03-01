@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
@@ -15,7 +16,15 @@ class AppDrawerHeader extends StatelessWidget {
         decoration: const BoxDecoration(),
         child: Row(
           children: [
-            Image.asset('assets/images/icon.ico'),
+            kIsWeb
+                ? Image.asset(
+                    'assets/images/favicon.png',
+                    width: 55,
+                    height: 55,
+                  )
+                : Image.asset(
+                    'assets/images/icon.ico',
+                  ),
             const SizedBox(
               width: 20,
             ),

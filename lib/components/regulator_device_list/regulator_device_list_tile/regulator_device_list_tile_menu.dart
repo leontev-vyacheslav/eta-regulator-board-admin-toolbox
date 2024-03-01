@@ -13,6 +13,7 @@ import 'package:eta_regulator_board_admin_toolbox/notifiers/regulator_devices_ch
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -82,11 +83,11 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
       ),
     ];
 
-    if (PlatformInfo.isDesktopOS) {
+    if (PlatformInfo.isDesktopOS()) {
       menuItems.addAll([
         const PopupMenuItemDivider(),
         PopupMenuItem(
-          enabled: PlatformInfo.isDesktopOS,
+          enabled: PlatformInfo.isDesktopOS(),
           child: const Row(children: [
             Icon(Icons.install_desktop_outlined),
             SizedBox(
@@ -218,10 +219,10 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
 
     if (imageData != null) {
       String? outputFile;
-      if (PlatformInfo.isDesktopOS) {
+      if (PlatformInfo.isDesktopOS()) {
         outputFile = await FilePicker.platform.saveFile(
             dialogTitle: 'Please select an output file:', fileName: '${device.name}.png', allowedExtensions: ['*.png']);
-      } else if (Platform.isAndroid) {
+      } else if (!kIsWeb && Platform.isAndroid) {
         var directory = Directory("/storage/emulated/0/Download");
         outputFile = '${directory.path}/${device.name}.png';
       } else {

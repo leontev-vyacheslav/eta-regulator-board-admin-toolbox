@@ -2,6 +2,7 @@ import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button
 import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AboutDialog extends AppBaseDialog {
@@ -27,7 +28,15 @@ class AboutDialog extends AppBaseDialog {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Image.asset('assets/images/icon.ico'),
+            kIsWeb
+                ? Image.asset(
+                    'assets/images/favicon.png',
+                    width: 55,
+                    height: 55,
+                  )
+                : Image.asset(
+                    'assets/images/icon.ico',
+                  ),
             const SizedBox(width: 10),
             const Flexible(
                 child: Text(

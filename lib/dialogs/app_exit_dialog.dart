@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
@@ -19,7 +18,7 @@ class AppExitDialog extends AppBaseDialog {
   List<Widget> get actions => [
         AppElevatedButton(
             onPressed: () async {
-              if (Platform.isWindows || Platform.isLinux) {
+              if (PlatformInfo.isDesktopOS()) {
                 await windowManager.close();
               } else {
                 SystemNavigator.pop();

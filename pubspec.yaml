@@ -42,9 +42,7 @@ dev_dependencies:
   json_serializable: ^6.7.1
 
 flutter_native_splash:
-  color: "#ffffff"
-  image: "assets/images/favicon.png"
-  icon_background_color: "#ffffff"
+  web: false
   android_12:
     image: "assets/images/favicon.png"
     icon_background_color: "#ffffff"
@@ -61,9 +59,9 @@ flutter_launcher_icons:
 
 
 flutter:
+  uses-material-design: true
   assets:
     - assets/images/
     - assets/
-  uses-material-design: true
 
 
