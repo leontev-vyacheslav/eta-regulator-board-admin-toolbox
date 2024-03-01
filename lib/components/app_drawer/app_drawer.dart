@@ -107,7 +107,7 @@ class AppDrawer extends Drawer {
 
       var archiveBuffer = await archiveFile.readAsBytes();
       var archive = ZipDecoder().decodeBytes(archiveBuffer);
-      var basePath = 'assets/distributable/${basenameWithoutExtension(archiveFile.path)}';
+      var basePath = 'assets/deployment/distributable/${basenameWithoutExtension(archiveFile.path)}';
 
       if (await Directory(basePath).exists()) {
         AppToast.show(context, ToastTypes.warning, 'The installation package exists already.',

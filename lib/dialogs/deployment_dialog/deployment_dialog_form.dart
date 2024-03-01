@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -161,19 +163,19 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     _textFieldScrollController.jumpTo(_textFieldScrollController.position.maxScrollExtent);
   }
 
-  Map<String, Object> _getLastDistributable(String appName) {
+  Map<String, Object>? _getLastDistributable(String appName) {
     var distributableDir = Directory('$_deploymentPath/distributable');
-    var distroFolderInfo = distributableDir
-        .listSync()
-        .where((d) => d.path.startsWith('eta_regulator_board_$appName'))
-        .map((d) {
-          var folderName = basenameWithoutExtension(d.path);
-          return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
-        })
-        .sortedBy((element) => element.keys.first)
-        .last;
+    var distroFoldersInfo =
+        distributableDir.listSync().where((d) => d.path.contains('eta_regulator_board_$appName')).map((d) {
+      var folderName = basenameWithoutExtension(d.path);
+      return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
+    }).sortedBy((element) => element.keys.first);
 
-    return distroFolderInfo;
+    if (distroFoldersInfo.isNotEmpty) {
+      return distroFoldersInfo.last;
+    }
+
+    return null;
   }
 
   void _stopScriptProcess() {
@@ -218,6 +220,15 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
 
   Future<void> _deploy(String appName, {bool clearLog = true}) async {
     var distroFolder = _getLastDistributable(appName);
+    if (distroFolder == null) {
+      AppToast.show(widget.context, ToastTypes.warning, AppStrings.messageDeploymentPackageNotFound,
+          duration: const Duration(seconds: 5));
+
+      _textEditingController.clear();
+      _textEditingController.text += AppStrings.messageDeploymentPackageNotFound;
+
+      return;
+    }
 
     _startScriptProcess([
       '$_deploymentPath/deploy_$appName.ps1',
@@ -231,7 +242,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   }
 
   Future<void> _deployAll() async {
-    await _deploy('web_ui', clearLog: false);
+    await _deploy('web_ui', clearLog: true);
     await _deploy('web_api', clearLog: false);
   }
 }

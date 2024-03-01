@@ -46,4 +46,7 @@ class AppStrings {
   static const dialogTitleDeploy = 'Deployment';
 
   static const dialogTitleConfirm = 'Confirm';
+
+  static const messageDeploymentPackageNotFound =
+      'The distributable package was not found. The deployment cannot be done!';
 }

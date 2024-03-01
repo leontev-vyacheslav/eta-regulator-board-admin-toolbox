@@ -7,16 +7,13 @@ $buildDateTimeMark = Get-Date -Format "yyyyMMdd-HHmmss"
 
 function CheckConnection ([string] $ipaddr) {
     Write-Host "Check connection with device ${ipaddr} in progress..."
-    Write-Host
     # Check connection
-
-    $testConnectionStatus = Test-Connection -TargetName $ipaddr -IPv4 -Count 5
-    If ($testConnectionStatus.Status -ne "Success") {
-        Write-Host "ERROR! Failed to connect to the device ${ipaddr}."
-        Exit 0
+    If (Test-Connection -TargetName $ipaddr -IPv4 -Quiet -Count 1) {
+        Write-Host "Successful connection to the device ${ipaddr}."
     }
     else {
-        Write-Host "Successful connection to the device ${ipaddr}."
+        Write-Host "ERROR! Failed to connect to the device ${ipaddr}."
+        Exit 0
     }
 
     Write-Host

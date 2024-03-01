@@ -11,13 +11,7 @@ $WEB_UI_APP_NAME = "eta-regulator-board-web-ui"
 $APP_ROOT = "/web-ui"
 
 # Check connection
-Write-Host "Check connection with device ${ipaddr} in progress..."
-$testConnectionStatus = Test-Connection -TargetName $ipaddr -IPv4 -Count 5
-If ($testConnectionStatus.Status -ne "Success") {
-    Write-Host "ERROR! Failed to connect to the device ${ipaddr}."
-    Exit 1
-}
-Write-Host "Connection with the device ${ipaddr} was established!"
+CheckConnection -ipaddr $ipaddr
 Write-Host
 Start-Sleep -Seconds 2
 
