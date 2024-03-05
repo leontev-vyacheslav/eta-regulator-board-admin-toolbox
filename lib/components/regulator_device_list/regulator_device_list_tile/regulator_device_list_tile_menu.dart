@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
-import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
-import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
@@ -52,7 +50,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
           Text(AppStrings.menuRemoveDevice)
         ]),
         onTap: () async {
-          await _showDeleteRegulatorDevice();
+          await _showRemoveRegulatorDeviceDialog();
         },
       ),
       const PopupMenuItemDivider(),
@@ -124,37 +122,12 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
         });
   }
 
-  Future<void> _showDeleteRegulatorDevice() async {
+  Future<void> _showRemoveRegulatorDeviceDialog() async {
     var dialogResult = await showDialog<DialogResult>(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
-          return AppBaseDialog(
-            titleText: AppStrings.dialogTitleConfirm,
-            titleIcon: Icons.question_answer_outlined,
-            context: context,
-            actions: [
-              AppElevatedButton(
-                  onPressed: () async {
-                    Navigator.pop<DialogResult>(
-                        context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.ok, value: device));
-                  },
-                  child: const AppElevatedButtonLabel(
-                    label: AppStrings.buttonOk,
-                    icon: Icons.check,
-                    color: AppColors.textAccent,
-                  )),
-              AppElevatedButton(
-                  onPressed: () {
-                    Navigator.pop<DialogResult>(
-                        context, DialogResult<RegulatorDeviceModel?>(result: ModalResults.cancel));
-                  },
-                  child: const AppElevatedButtonLabel(
-                    label: AppStrings.buttonCancel,
-                    icon: Icons.close,
-                  ))
-            ],
-            content: const SizedBox(width: 480, child: Text(AppStrings.confirmRemoveDevice)),
-          );
+          return RemoveRegulatorDeviceDialog(context: context, device: device);
         });
 
     if (dialogResult?.result == ModalResults.ok && dialogResult?.value != null) {

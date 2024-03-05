@@ -10,11 +10,14 @@ import 'app.dart';
 
 import 'package:get_it/get_it.dart';
 
+import 'data_access/deployment_package_repository.dart';
+
 final getIt = GetIt.instance;
 
 void configureDependencies() {
   getIt.registerSingleton<AppHttpClientFactory>(AppHttpClientFactory());
   getIt.registerSingleton<RegulatorDeviceRepository>(RegulatorDeviceRepository());
+  getIt.registerSingleton<DeploymentPackageRepository>(DeploymentPackageRepository());
 }
 
 void main() async {

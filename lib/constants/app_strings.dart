@@ -7,7 +7,7 @@ class AppStrings {
 
   static const String confirmAppExit = 'Do you really want to exit app?';
 
-  static const String confirmRemoveDevice = 'Do you really want to remove device?';
+  static const String confirmRemoveDevice = 'Do you really want to remove %device% device?';
 
   static const buttonOk = 'OK';
 
@@ -17,7 +17,7 @@ class AppStrings {
 
   static const menuDownload = 'Download database';
 
-  static const menuUpload = 'Get device app package';
+  static const menuUpload = 'Upload deployment package';
 
   static const menuAbout = 'About';
 

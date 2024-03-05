@@ -4,6 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/file_helper.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/about_dialog.dart' as about_dialog;
 import 'package:path/path.dart';
+
+import '../../data_access/deployment_package_repository.dart';
 
 class AppDrawer extends Drawer {
   final BuildContext context;
@@ -94,11 +97,11 @@ class AppDrawer extends Drawer {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AppExitDialog(titleText: AppStrings.dialogTitleConfirm, context: context);
+          return AppExitDialog(context: context);
         });
   }
 
-  Future<void> _getAppPackage() async {
+  Future<void> _getAppPackage({bool loadOnServer = false}) async {
     var pickerResult = await FilePicker.platform.pickFiles(
         dialogTitle: 'Please select a file:', allowedExtensions: ['zip'], allowMultiple: false, type: FileType.custom);
 
@@ -106,6 +109,12 @@ class AppDrawer extends Drawer {
       var archiveFile = File(pickerResult.files[0].path!);
 
       var archiveBuffer = await archiveFile.readAsBytes();
+
+      if (loadOnServer) {
+        var repository = getIt<DeploymentPackageRepository>();
+        repository.uploadDeploymentPackager(archiveBuffer, pickerResult.files[0].name);
+      }
+
       var archive = ZipDecoder().decodeBytes(archiveBuffer);
       var basePath = 'assets/deployment/distributable/${basenameWithoutExtension(archiveFile.path)}';
 

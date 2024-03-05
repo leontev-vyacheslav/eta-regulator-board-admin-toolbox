@@ -39,7 +39,7 @@ class AppTitleBar extends StatelessWidget {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AppExitDialog(titleText: AppStrings.dialogTitleConfirm, context: context);
+                        return AppExitDialog(context: context);
                       });
                 })
             : Container(),
