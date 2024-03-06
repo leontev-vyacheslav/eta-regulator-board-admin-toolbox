@@ -1,7 +1,8 @@
 param(
     [string]$ipaddr,
     [string]$distro,
-    [string]$root
+    [string]$root,
+    [string]$checkConnection
 )
 
 Import-Module $PSScriptRoot\deployment_support.ps1 -Force
@@ -10,11 +11,15 @@ Import-Module $PSScriptRoot\deployment_support.ps1 -Force
 $WEB_API_APP_NAME = "eta-regulator-board-web-api"
 $APP_ROOT = "/web-api"
 
+Write-Host "--------Deployment of '$WEB_API_APP_NAME'--------"
+Write-Host
 
 # Check connection
-CheckConnection -ipaddr $ipaddr
-Write-Host
-Start-Sleep -Seconds 2
+if ($checkConnection -eq '$True') {
+    CheckConnection -ipaddr $ipaddr
+    Write-Host
+    Start-Sleep -Seconds 2
+}
 
 # Sync date&time on OpenWrt OS
 Sync-DateTime -ipaddr $ipaddr
@@ -85,3 +90,4 @@ Write-Host
 # Launching 'eta-regulator-board-web-api...
 Write-Host "Launching '$WEB_API_APP_NAME'..."
 ssh ${ACCOUNT}@${ipaddr} "cd ${WORKSPACE_ROOT}${APP_ROOT}/; sh startup.sh"
+

@@ -1,7 +1,8 @@
 param(
     [string]$ipaddr,
     [string]$distro,
-    [string]$root
+    [string]$root,
+    [string]$checkConnection
 )
 
 Import-Module $PSScriptRoot\deployment_support.ps1 -Force
@@ -10,10 +11,15 @@ Import-Module $PSScriptRoot\deployment_support.ps1 -Force
 $WEB_UI_APP_NAME = "eta-regulator-board-web-ui"
 $APP_ROOT = "/web-ui"
 
-# Check connection
-CheckConnection -ipaddr $ipaddr
+Write-Host "--------Deployment of '$WEB_UI_APP_NAME'--------"
 Write-Host
-Start-Sleep -Seconds 2
+# Check connection
+if ($checkConnection -eq '$True') {
+    CheckConnection -ipaddr $ipaddr
+    Write-Host
+    Start-Sleep -Seconds 2
+}
+
 
 # Sync date&time on OpenWrt OS
 Sync-DateTime -ipaddr $ipaddr
@@ -76,6 +82,3 @@ if ($hasError) {
     Exit 1
 }
 Start-Sleep -Seconds 2
-
-Write-Host
-Write-Host "CONGRATULATION! Deployment on $ipaddr was suiccessfully complete!"

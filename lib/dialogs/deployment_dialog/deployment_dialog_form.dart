@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
@@ -9,7 +11,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'dart:core';
+import 'package:html/parser.dart';
 import 'package:collection/collection.dart';
+
+enum DeviceWebApps { webAny, webApi, webUi }
 
 class DeploymentDialogForm extends StatefulWidget {
   final RegulatorDeviceModel device;
@@ -29,6 +34,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   RegulatorDeviceModel? _device;
   Process? _process;
   bool _menuEnable = true;
+  bool _isDeploymentProcessActive = false;
 
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _textFieldScrollController = ScrollController();
@@ -68,7 +74,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
               PopupMenuItem(
                 enabled: _menuEnable,
                 onTap: () async {
-                  await _deploy('web_ui');
+                  await _deploy(DeviceWebApps.webUi);
                 },
                 child: const Row(children: [
                   Icon(Icons.web_outlined),
@@ -81,7 +87,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
               PopupMenuItem(
                 enabled: _menuEnable,
                 onTap: () async {
-                  await _deploy('web_api');
+                  await _deploy(DeviceWebApps.webApi);
                 },
                 child: const Row(children: [
                   Icon(Icons.api_outlined),
@@ -95,7 +101,14 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
               PopupMenuItem(
                 enabled: _menuEnable,
                 onTap: () async {
-                  await _deployAll();
+                  await _deploy(DeviceWebApps.webApi);
+
+                  Timer.periodic(const Duration(seconds: 1), (timer) async {
+                    if (!_isDeploymentProcessActive) {
+                      timer.cancel();
+                      await _deploy(DeviceWebApps.webUi, clearLog: false, checkConnection: false);
+                    }
+                  });
                 },
                 child: const Row(children: [
                   Icon(Icons.install_desktop_outlined),
@@ -118,7 +131,24 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
                   ),
                   Text('Stop deployment')
                 ]),
-              )
+              ),
+              const PopupMenuItemDivider(),
+              PopupMenuItem(
+                // enabled: _menuEnable,
+                onTap: () async {
+                  await _checkDeploy(
+                    webApp: DeviceWebApps.webApi,
+                  );
+                  await _checkDeploy(webApp: DeviceWebApps.webUi, clearLog: false);
+                },
+                child: const Row(children: [
+                  Icon(Icons.checklist),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Check deployment')
+                ]),
+              ),
             ];
           },
         ),
@@ -161,6 +191,10 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     text = text.replaceAll(RegExp('\x1b[[0-9;]*m'), '');
     _textEditingController.text += text;
     _textFieldScrollController.jumpTo(_textFieldScrollController.position.maxScrollExtent);
+
+    if (text.contains('Booting worker with pid')) {
+      _stopScriptProcess();
+    }
   }
 
   Map<String, Object>? _getLastDistributable(String appName) {
@@ -182,10 +216,11 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     if (_process != null) {
       _process!.kill();
       _process = null;
+      _isDeploymentProcessActive = false;
     }
   }
 
-  Future<void> _startScriptProcess(List<String> args, {bool clearLog = true}) async {
+  Future<void> _startScriptProcess(DeviceWebApps webApp, List<String> args, {bool clearLog = true}) async {
     if (_process != null) {
       _process!.kill();
       _process = null;
@@ -195,14 +230,15 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       _textEditingController.text = '';
     }
 
-    setState(() {
-      _menuEnable = false;
-    });
-
     _process = await Process.start(
       'pwsh.exe',
       args,
     );
+
+    setState(() {
+      _menuEnable = false;
+      _isDeploymentProcessActive = true;
+    });
 
     _process!.stdout.transform(utf8.decoder).listen(_stdStreamListener);
     _process!.stderr.transform(utf8.decoder).listen(_stdStreamListener);
@@ -210,15 +246,69 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     _process!.exitCode.then((value) {
       setState(() {
         _menuEnable = true;
+        _isDeploymentProcessActive = false;
+        _process = null;
       });
     });
   }
 
   Future<void> _checkConnection() async {
-    await _startScriptProcess(['$_deploymentPath/check_connection.ps1', '-ipaddr', _device!.name]);
+    await _startScriptProcess(
+        DeviceWebApps.webAny, ['$_deploymentPath/check_connection.ps1', '-ipaddr', _device!.name]);
   }
 
-  Future<void> _deploy(String appName, {bool clearLog = true}) async {
+  Future<void> _checkDeploy({DeviceWebApps webApp = DeviceWebApps.webApi, bool clearLog = true}) async {
+    var webAppPort = webApp == DeviceWebApps.webApi ? 5000 : 3000;
+    var webAppTitle = webApp == DeviceWebApps.webApi ? AppStrings.webApiTitle : AppStrings.webUiTitle;
+    var isFound = false;
+    var webResponseMessage = '';
+    var toastMessage = 'The deployment of $webAppTitle was not found!';
+
+    if (clearLog) {
+      _textEditingController.clear();
+      _textEditingController.text += 'The deploy verification on progress...\n';
+    }
+
+    var httpClient = Dio();
+    try {
+      var webApiResponse = await httpClient.get('http://${widget.device.name}:$webAppPort');
+
+      if (webApiResponse.statusCode == 200) {
+        var response = webApiResponse.data;
+        if (webApp == DeviceWebApps.webApi) {
+          webResponseMessage = (response["message"].toString());
+          isFound = webResponseMessage.contains(webAppTitle);
+        } else {
+          var document = parse(response);
+          var metaDescription = document.querySelector('meta[name="description"]')!.attributes['content'];
+          if (metaDescription != null) {
+            webResponseMessage = metaDescription;
+            isFound = webResponseMessage.contains(webAppTitle);
+          }
+        }
+      }
+    } catch (e) {
+      _textEditingController.text += '${AppStrings.messageVerificationFailed}\n';
+      _textEditingController.text += 'An error was happened. An exception details: $e.\n`';
+
+      toastMessage = 'The deploy verification of ${AppStrings.webApiTitle} was failed with an error!';
+    }
+
+    if (isFound) {
+      var webApiVersion = webResponseMessage.replaceAll(webAppTitle, '').trim();
+      _textEditingController.text += '$webAppTitle was successfully found.\n';
+      _textEditingController.text += 'Its version is $webApiVersion!\n';
+      toastMessage = 'The deploy verification of $webAppTitle was successful!';
+    } else {
+      _textEditingController.text += '${AppStrings.messageVerificationFailed}\n';
+    }
+
+    AppToast.show(widget.context, isFound ? ToastTypes.success : ToastTypes.error, toastMessage,
+        duration: const Duration(seconds: 5));
+  }
+
+  Future<void> _deploy(DeviceWebApps webApp, {bool clearLog = true, bool checkConnection = true}) async {
+    var appName = webApp == DeviceWebApps.webApi ? 'web_api' : 'web_ui';
     var distroFolder = _getLastDistributable(appName);
     if (distroFolder == null) {
       AppToast.show(widget.context, ToastTypes.warning, AppStrings.messageDeploymentPackageNotFound,
@@ -230,7 +320,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       return;
     }
 
-    _startScriptProcess([
+    var args = [
       '$_deploymentPath/deploy_$appName.ps1',
       '-ipaddr',
       _device!.name,
@@ -238,11 +328,14 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       _deploymentPath,
       '-distro',
       distroFolder.entries.first.value as String,
-    ], clearLog: clearLog);
-  }
+    ];
 
-  Future<void> _deployAll() async {
-    await _deploy('web_ui', clearLog: true);
-    await _deploy('web_api', clearLog: false);
+    if (checkConnection) {
+      args.addAll(['-checkConnection', '\$True']);
+    } else {
+      args.addAll(['-checkConnection', '\$False']);
+    }
+
+    _startScriptProcess(webApp, args, clearLog: clearLog);
   }
 }

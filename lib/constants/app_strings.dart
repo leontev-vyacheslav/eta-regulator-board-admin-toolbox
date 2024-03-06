@@ -29,7 +29,7 @@ class AppStrings {
 
   static const menuEditDevice = 'Edit device';
 
-  static const menuDeploy = 'Deploy';
+  static const menuDeploy = 'Deployment';
 
   static const menuRemoveDevice = 'Remove device';
 
@@ -49,4 +49,10 @@ class AppStrings {
 
   static const messageDeploymentPackageNotFound =
       'The distributable package was not found. The deployment cannot be done!';
+
+  static const messageVerificationFailed = 'Verification failed!';
+
+  static const webApiTitle = 'Eta Regulator Board Web API';
+
+  static const webUiTitle = 'Eta Regulator Board Web UI';
 }
