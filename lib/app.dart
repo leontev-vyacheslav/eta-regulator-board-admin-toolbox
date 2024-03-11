@@ -1,4 +1,4 @@
-import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/pages/home_page.dart';
 import 'package:eta_regulator_board_admin_toolbox/notifiers/regulator_devices_change_notifier.dart';
@@ -51,11 +51,11 @@ class AppState extends State<App> {
         ChangeNotifierProvider(create: (context) => RegulatorDevicesChangeNotifier())
       ],
       child: MaterialApp(
-        title: AppStrings.appTitle,
+        title: AppConsts.appTitle,
         themeMode: _themeMode,
         theme: ThemeData.light(),
         darkTheme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark)),
-        home: const HomePage(title: AppStrings.appTitle),
+        home: const HomePage(title: AppConsts.appTitle),
         debugShowCheckedModeBanner: false,
       ),
     );

@@ -1,7 +1,7 @@
+import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
-import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 
 class AppDrawerHeader extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -28,7 +28,7 @@ class AppDrawerHeader extends StatelessWidget {
             const SizedBox(
               width: 20,
             ),
-            const Expanded(child: Text(AppStrings.companyTradeMark, style: TextStyle(color: AppColors.textAccent))),
+            const Expanded(child: Text(AppConsts.companyTradeMark, style: TextStyle(color: AppColors.textAccent))),
             IconButton(
                 onPressed: () {
                   scaffoldKey.currentState!.closeDrawer();

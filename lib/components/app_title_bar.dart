@@ -1,5 +1,5 @@
 import 'package:eta_regulator_board_admin_toolbox/components/window_drag_area.dart';
-import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class AppTitleBar extends StatelessWidget {
               scaffoldKey.currentState!.openDrawer();
             }),
         Expanded(
-          child: Text(AppStrings.appTitle,
+          child: Text(AppConsts.appTitle,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(

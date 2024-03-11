@@ -1,9 +1,5 @@
 class AppStrings {
-  static const String companyTradeMark = 'ETA24™';
 
-  static const String appTitle = 'ETA Regulator Board Admin';
-
-  static const String appVersion = 'v. 0.01';
 
   static const String confirmAppExit = 'Do you really want to exit app?';
 
@@ -33,7 +29,7 @@ class AppStrings {
 
   static const menuRemoveDevice = 'Remove device';
 
-  static const menuQRCodeId = 'Device ID QR-code';
+  static const menuQRCodeId = 'Device Wifi QR-code';
 
   static const menuCreateAccessToken = 'Create access token';
 
@@ -52,7 +48,4 @@ class AppStrings {
 
   static const messageVerificationFailed = 'Verification failed!';
 
-  static const webApiTitle = 'Eta Regulator Board Web API';
-
-  static const webUiTitle = 'Eta Regulator Board Web UI';
 }

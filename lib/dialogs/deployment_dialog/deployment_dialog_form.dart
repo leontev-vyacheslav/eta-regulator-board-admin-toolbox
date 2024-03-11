@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
@@ -258,8 +259,8 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   }
 
   Future<void> _checkDeploy({DeviceWebApps webApp = DeviceWebApps.webApi, bool clearLog = true}) async {
-    var webAppPort = webApp == DeviceWebApps.webApi ? 5000 : 3000;
-    var webAppTitle = webApp == DeviceWebApps.webApi ? AppStrings.webApiTitle : AppStrings.webUiTitle;
+    var webAppPort = webApp == DeviceWebApps.webApi ? AppConsts.webApiPort : AppConsts.webUiPort;
+    var webAppTitle = webApp == DeviceWebApps.webApi ? AppConsts.webApiTitle : AppConsts.webUiTitle;
     var isFound = false;
     var webResponseMessage = '';
     var toastMessage = 'The deployment of $webAppTitle was not found!';
@@ -291,7 +292,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       _textEditingController.text += '${AppStrings.messageVerificationFailed}\n';
       _textEditingController.text += 'An error was happened. An exception details: $e.\n`';
 
-      toastMessage = 'The deploy verification of ${AppStrings.webApiTitle} was failed with an error!';
+      toastMessage = 'The deploy verification of $webAppTitle was failed with an error!';
     }
 
     if (isFound) {

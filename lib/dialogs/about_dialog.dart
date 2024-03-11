@@ -1,5 +1,6 @@
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:flutter/foundation.dart';
@@ -42,7 +43,7 @@ class AboutDialog extends AppBaseDialog {
                 child: Text(
               maxLines: 2,
               overflow: TextOverflow.clip,
-              '${AppStrings.appTitle} ${AppStrings.appVersion}',
+              '${AppConsts.appTitle} ${AppConsts.appVersion}',
               style: TextStyle(color: AppColors.textAccent),
             ))
           ],

@@ -63,7 +63,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
           Text(AppStrings.menuQRCodeId)
         ]),
         onTap: () async {
-          await _saveDeviceQrCode();
+          await _saveWifiDeviceQrCode();
         },
       ),
       const PopupMenuItemDivider(),
@@ -175,9 +175,9 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
     }
   }
 
-  Future<void> _saveDeviceQrCode() async {
+  Future<void> _saveWifiDeviceQrCode() async {
     var painter = QrPainter(
-      data: device.id,
+      data: 'WIFI:S:${device.name};T:WPA;P:123456789;;',
       // ignore: deprecated_member_use
       emptyColor: Colors.white,
       version: QrVersions.auto,
