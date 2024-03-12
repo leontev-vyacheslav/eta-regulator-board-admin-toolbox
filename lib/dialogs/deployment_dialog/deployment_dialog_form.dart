@@ -2,10 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:dio/dio.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/deployment_package_repository.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +18,7 @@ import 'dart:core';
 import 'package:html/parser.dart';
 import 'package:collection/collection.dart';
 
-enum DeviceWebApps { webAny, webApi, webUi }
+import '../../models/device_web_apps.dart';
 
 class DeploymentDialogForm extends StatefulWidget {
   final RegulatorDeviceModel device;
@@ -58,6 +61,21 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
         PopupMenuButton(
           itemBuilder: (context) {
             return [
+              PopupMenuItem(
+                enabled: _menuEnable,
+                onTap: () async {
+                  await _updateDeployment(DeviceWebApps.webApi);
+                  await _updateDeployment(DeviceWebApps.webUi);
+                },
+                child: const Row(children: [
+                  Icon(Icons.system_update),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Update deployments')
+                ]),
+              ),
+              const PopupMenuItemDivider(),
               PopupMenuItem(
                 enabled: _menuEnable,
                 onTap: () async {
@@ -200,6 +218,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
 
   Map<String, Object>? _getLastDistributable(String appName) {
     var distributableDir = Directory('$_deploymentPath/distributable');
+
     var distroFoldersInfo =
         distributableDir.listSync().where((d) => d.path.contains('eta_regulator_board_$appName')).map((d) {
       var folderName = basenameWithoutExtension(d.path);
@@ -338,5 +357,42 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     }
 
     _startScriptProcess(webApp, args, clearLog: clearLog);
+  }
+
+  Future<void> _updateDeployment(DeviceWebApps webApp) async {
+    var repository = getIt<DeploymentPackageRepository>();
+    var downloadedFile = await repository.downloadDeploymentPackage(webApp);
+    if (downloadedFile != null) {
+      var basePath = 'assets/deployment/distributable/${basenameWithoutExtension(downloadedFile.fileName)}';
+
+      if (await Directory(basePath).exists()) {
+        AppToast.show(widget.context, ToastTypes.warning, 'The deployment package exists already.',
+            duration: const Duration(seconds: 5));
+
+        return;
+      }
+
+      var archive = ZipDecoder().decodeBytes(downloadedFile.buffer);
+      extractArchiveToDisk(archive, basePath);
+
+      for (final file in archive) {
+        final filename = file.name;
+        var path = '$basePath/$filename';
+        if (file.isFile) {
+          final data = file.content as List<int>;
+          File(path)
+            ..createSync(recursive: true)
+            ..writeAsBytesSync(data);
+        } else {
+          Directory(path).create(recursive: true);
+        }
+      }
+
+      AppToast.show(widget.context, ToastTypes.success, 'The deployment package was successfully unzipped.');
+    } else {
+      AppToast.show(widget.context, ToastTypes.warning,
+          'The deployment package of ${webApp == DeviceWebApps.webApi ? "web API" : "web UI "} application  was not found.',
+          duration: const Duration(seconds: 5));
+    }
   }
 }

@@ -1,19 +1,13 @@
-import 'dart:io';
 
-import 'package:archive/archive.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
-import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/file_helper.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/about_dialog.dart' as about_dialog;
-import 'package:path/path.dart';
 
-import '../../data_access/deployment_package_repository.dart';
 
 class AppDrawer extends Drawer {
   final BuildContext context;
@@ -37,13 +31,6 @@ class AppDrawer extends Drawer {
                         context, ToastTypes.success, 'Regulator device list saved to a json file successfully.');
                   }
                 });
-              }),
-          ListTile(
-              leading: const Icon(Icons.archive_outlined),
-              title: const Text(AppStrings.menuUpload),
-              visualDensity: const VisualDensity(vertical: 2),
-              onTap: () async {
-                await _getAppPackage();
               }),
           const Divider(
             height: 1,
@@ -99,46 +86,5 @@ class AppDrawer extends Drawer {
         builder: (BuildContext context) {
           return AppExitDialog(context: context);
         });
-  }
-
-  Future<void> _getAppPackage({bool loadOnServer = false}) async {
-    var pickerResult = await FilePicker.platform.pickFiles(
-        dialogTitle: 'Please select a file:', allowedExtensions: ['zip'], allowMultiple: false, type: FileType.custom);
-
-    if (pickerResult != null && pickerResult.files.isNotEmpty) {
-      var archiveFile = File(pickerResult.files[0].path!);
-
-      var archiveBuffer = await archiveFile.readAsBytes();
-
-      if (loadOnServer) {
-        var repository = getIt<DeploymentPackageRepository>();
-        repository.uploadDeploymentPackager(archiveBuffer, pickerResult.files[0].name);
-      }
-
-      var archive = ZipDecoder().decodeBytes(archiveBuffer);
-      var basePath = 'assets/deployment/distributable/${basenameWithoutExtension(archiveFile.path)}';
-
-      if (await Directory(basePath).exists()) {
-        AppToast.show(context, ToastTypes.warning, 'The installation package exists already.',
-            duration: const Duration(seconds: 5));
-
-        return;
-      }
-
-      for (final file in archive) {
-        final filename = file.name;
-        var path = '$basePath/$filename';
-        if (file.isFile) {
-          final data = file.content as List<int>;
-          File(path)
-            ..createSync(recursive: true)
-            ..writeAsBytesSync(data);
-        } else {
-          Directory(path).create(recursive: true);
-        }
-      }
-
-      AppToast.show(context, ToastTypes.success, 'The installation package was successfully unzipped.');
-    }
   }
 }
