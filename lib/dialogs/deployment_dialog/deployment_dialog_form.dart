@@ -348,6 +348,8 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       _deploymentPath,
       '-distro',
       distroFolder.entries.first.value as String,
+      '-masterKey',
+      _device!.masterKey,
     ];
 
     if (checkConnection) {

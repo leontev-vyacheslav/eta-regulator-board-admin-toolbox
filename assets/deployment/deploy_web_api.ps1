@@ -2,7 +2,8 @@ param(
     [string]$ipaddr,
     [string]$distro,
     [string]$root,
-    [string]$checkConnection
+    [string]$checkConnection,
+    [string]$masterKey
 )
 
 Import-Module $PSScriptRoot\deployment_support.ps1 -Force
@@ -50,10 +51,16 @@ Get-ChildItem -Path "./${root}/distributable/${distro}/build/src" -Recurse -Incl
 Start-Sleep -Seconds 2
 Write-Host
 
+$build = "${root}/distributable/${distro}/build"
+
+$find = "MASTER_KEY = '.*$"
+$replace = "MASTER_KEY = '${masterKey}'"
+
+(Get-Content "${build}/src/app.py") -replace $find, $replace | Set-Content "${build}/src/app.py"
+
 
 # Copying updated files...
 Write-Host "Copying updated files..." -ForegroundColor Green
-$build = "${root}/distributable/${distro}/build"
 $remoteOutput = scp -r ${build}/src ${build}/data ${build}/log ${build}/startup.sh ${build}/requirements.txt ${ACCOUNT}@${ipaddr}:${WORKSPACE_ROOT}${APP_ROOT} *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
