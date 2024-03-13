@@ -361,12 +361,13 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
 
   Future<void> _updateDeployment(DeviceWebApps webApp) async {
     var repository = getIt<DeploymentPackageRepository>();
+    var appName = "${webApp == DeviceWebApps.webApi ? "web API" : "web UI"} application";
     var downloadedFile = await repository.downloadDeploymentPackage(webApp);
     if (downloadedFile != null) {
       var basePath = 'assets/deployment/distributable/${basenameWithoutExtension(downloadedFile.fileName)}';
 
       if (await Directory(basePath).exists()) {
-        AppToast.show(widget.context, ToastTypes.warning, 'The deployment package exists already.',
+        AppToast.show(widget.context, ToastTypes.warning, 'The latest version of $appName is available already.',
             duration: const Duration(seconds: 5));
 
         return;
@@ -375,23 +376,10 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       var archive = ZipDecoder().decodeBytes(downloadedFile.buffer);
       extractArchiveToDisk(archive, basePath);
 
-      for (final file in archive) {
-        final filename = file.name;
-        var path = '$basePath/$filename';
-        if (file.isFile) {
-          final data = file.content as List<int>;
-          File(path)
-            ..createSync(recursive: true)
-            ..writeAsBytesSync(data);
-        } else {
-          Directory(path).create(recursive: true);
-        }
-      }
-
-      AppToast.show(widget.context, ToastTypes.success, 'The deployment package was successfully unzipped.');
+      AppToast.show(
+          widget.context, ToastTypes.success, 'The deployment package of $appName was successfully unzipped.');
     } else {
-      AppToast.show(widget.context, ToastTypes.warning,
-          'The deployment package of ${webApp == DeviceWebApps.webApi ? "web API" : "web UI "} application  was not found.',
+      AppToast.show(widget.context, ToastTypes.warning, 'The deployment package of $appName was not found.',
           duration: const Duration(seconds: 5));
     }
   }
