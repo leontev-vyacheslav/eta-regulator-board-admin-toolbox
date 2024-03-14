@@ -65,5 +65,7 @@ flutter:
   assets:
     - assets/images/
     - assets/
-
+    - assets/deployment/
+    - assets/deployment/configs/
+    - assets/deployment/distro/
 

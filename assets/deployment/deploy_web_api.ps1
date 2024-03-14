@@ -44,14 +44,13 @@ if ($hasError) {
 Start-Sleep -Seconds 2
 Write-Host
 
-
 # Deleting compiled Python version dependent modules...
 Write-Host "Deleting compiled Python version dependent modules..."
-Get-ChildItem -Path "./${root}/distributable/${distro}/build/src" -Recurse -Include "__pycache__" | Remove-Item -Force -Recurse
+Get-ChildItem -Path "./${root}/distro/${distro}/build/src" -Recurse -Include "__pycache__" | Remove-Item -Force -Recurse
 Start-Sleep -Seconds 2
 Write-Host
 
-$build = "${root}/distributable/${distro}/build"
+$build = "${root}/distro/${distro}/build"
 
 $find = "MASTER_KEY = '.*$"
 $replace = "MASTER_KEY = '${masterKey}'"

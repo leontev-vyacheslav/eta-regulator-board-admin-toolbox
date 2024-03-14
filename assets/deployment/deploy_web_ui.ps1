@@ -51,13 +51,13 @@ Write-Host
 
 # Deleting JS and CSS maps files
 Write-Host "Deleting JS and CSS source maps files..."
-Get-ChildItem -Path "./${root}/distributable/${distro}/build" -Recurse -Include "*.map" | Remove-Item -Force -Recurse
+Get-ChildItem -Path "./${root}/distro/${distro}/build" -Recurse -Include "*.map" | Remove-Item -Force -Recurse
 Start-Sleep -Seconds 2
 Write-Host
 
 # Copying files
 Write-Host "Copying updated files..."
-$remoteOutput = scp -r ${root}/distributable/${distro}/build ${ACCOUNT}@${ipaddr}:${WORKSPACE_ROOT}${APP_ROOT} *>&1
+$remoteOutput = scp -r ${root}/distro/${distro}/build ${ACCOUNT}@${ipaddr}:${WORKSPACE_ROOT}${APP_ROOT} *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
     Exit 1
@@ -79,6 +79,8 @@ Write-Host "Starting UHTTPD web server with '$WEB_UI_APP_NAME'..."
 $remoteOutput = ssh ${ACCOUNT}@${IPADDR} '/etc/init.d/uhttpd start' *>&1
 $hasError = Find-ExternalError -remoteOutput $remoteOutput
 if ($hasError) {
+    Write-Error $remoteOutput
     Exit 1
 }
+Write-Host "UHTTPD web server with '$WEB_UI_APP_NAME' was started!"
 Start-Sleep -Seconds 2

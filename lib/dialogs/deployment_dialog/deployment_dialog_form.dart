@@ -217,10 +217,10 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   }
 
   Map<String, Object>? _getLastDistributable(String appName) {
-    var distributableDir = Directory('$_deploymentPath/distributable');
+    var distributableDir = Directory('$_deploymentPath/distro');
 
     var distroFoldersInfo =
-        distributableDir.listSync().where((d) => d.path.contains('eta_regulator_board_$appName')).map((d) {
+        distributableDir.listSync().where((d) => d.path.contains(appName)).map((d) {
       var folderName = basenameWithoutExtension(d.path);
       return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
     }).sortedBy((element) => element.keys.first);
@@ -366,7 +366,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     var appName = "${webApp == DeviceWebApps.webApi ? "web API" : "web UI"} application";
     var downloadedFile = await repository.downloadDeploymentPackage(webApp);
     if (downloadedFile != null) {
-      var basePath = 'assets/deployment/distributable/${basenameWithoutExtension(downloadedFile.fileName)}';
+      var basePath = '$_deploymentPath/distro/${basenameWithoutExtension(downloadedFile.fileName)}';
 
       if (await Directory(basePath).exists()) {
         AppToast.show(widget.context, ToastTypes.warning, 'The latest version of $appName is available already.',
