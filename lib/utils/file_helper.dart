@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:file_picker/file_picker.dart';
@@ -14,9 +16,9 @@ class FileHelper {
     String? outputFile;
     if (PlatformInfo.isDesktopOS()) {
       outputFile = await FilePicker.platform.saveFile(
-          dialogTitle: 'Please select an output file:', fileName: FileHelper.fileName, allowedExtensions: ['json']);
+          dialogTitle: AppStrings.dialogTitleSaveFilePicker, fileName: FileHelper.fileName, allowedExtensions: ['json']);
     } else if (!kIsWeb && Platform.isAndroid) {
-      var directory = Directory("/storage/emulated/0/Download");
+      var directory = Directory(AppPaths.androidDownloadFolder);
       outputFile = '${directory.path}/${FileHelper.fileName}';
     } else {
       var directory = await getApplicationDocumentsDirectory();

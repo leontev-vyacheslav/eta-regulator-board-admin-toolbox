@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/deployment_package_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
@@ -29,7 +30,7 @@ class AppDrawer extends Drawer {
         children: [
           AppDrawerHeader(scaffoldKey: scaffoldKey),
           ListTile(
-              leading: const Icon(Icons.backup),
+              leading: const Icon(Icons.backup_outlined),
               title: const Text(AppStrings.menuGetBackup),
               visualDensity: const VisualDensity(vertical: 2),
               onTap: () async {
@@ -38,16 +39,16 @@ class AppDrawer extends Drawer {
                 if (downloadedFile != null) {
                   downloadedFile.fileName =
                       '${AppConsts.appName}_${basenameWithoutExtension(downloadedFile.fileName)}_${DateFormat('yyyyMMddTHms').format(DateTime.now().toUtc())}${extension(downloadedFile.fileName)}';
-                  AppToast.show(context, ToastTypes.success, 'The database backup has been received.');
+                  AppToast.show(context, ToastTypes.success, AppStrings.messageBackupReceived);
 
                   String? outputFile;
                   if (PlatformInfo.isDesktopOS()) {
                     outputFile = await FilePicker.platform.saveFile(
-                        dialogTitle: 'Please select an output file:',
+                        dialogTitle: AppStrings.dialogTitleSaveFilePicker,
                         fileName: downloadedFile.fileName,
                         allowedExtensions: ['*.sqlite3']);
                   } else if (!kIsWeb && Platform.isAndroid) {
-                    var directory = Directory("/storage/emulated/0/Download");
+                    var directory = Directory(AppPaths.androidDownloadFolder);
                     outputFile = '${directory.path}/${downloadedFile.fileName}';
                   } else {
                     var directory = await getApplicationDocumentsDirectory();
@@ -57,7 +58,7 @@ class AppDrawer extends Drawer {
                   if (outputFile != null) {
                     var file = File(outputFile);
                     file.writeAsBytes(downloadedFile.buffer).then((value) {
-                      AppToast.show(context, ToastTypes.success, 'The database backup saved successfully.');
+                      AppToast.show(context, ToastTypes.success, AppStrings.messageBackupSaved);
                     });
                   }
                 }

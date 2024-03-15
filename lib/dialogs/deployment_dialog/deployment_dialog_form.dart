@@ -6,6 +6,7 @@ import 'package:archive/archive_io.dart';
 import 'package:dio/dio.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/deployment_package_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/main.dart';
@@ -42,7 +43,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
 
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _textFieldScrollController = ScrollController();
-  final String _deploymentPath = kDebugMode ? 'assets/deployment' : 'data/flutter_assets/assets/deployment';
+  final String _deploymentPath = kDebugMode ? AppPaths.debugDeploymentFolder: AppPaths.deploymentFolder;
 
   @override
   void initState() {

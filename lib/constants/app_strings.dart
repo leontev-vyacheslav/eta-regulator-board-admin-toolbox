@@ -1,7 +1,7 @@
 class AppStrings {
-  static const String confirmAppExit = 'Do you really want to exit app?';
+  static const confirmAppExit = 'Do you really want to exit app?';
 
-  static const String confirmRemoveDevice = 'Do you really want to remove %device% device?';
+  static const confirmRemoveDevice = 'Do you really want to remove %device% device?';
 
   static const buttonOk = 'OK';
 
@@ -45,8 +45,16 @@ class AppStrings {
 
   static const dialogTitleConfirm = 'Confirm';
 
+  static const dialogTitleSaveFilePicker = 'Please select an output file:';
+
   static const messageDeploymentPackageNotFound =
       'The distributable package was not found. The deployment cannot be done!';
 
   static const messageVerificationFailed = 'Verification failed!';
+
+  static const messageBackupReceived = 'The database backup has been received.';
+
+  static const messageBackupSaved = 'The database backup saved successfully.';
+
+  static const messageWifiQrCodeSaved = 'Wifi QR-code of the device saved successfully.';
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
@@ -263,9 +264,9 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
       String? outputFile;
       if (PlatformInfo.isDesktopOS()) {
         outputFile = await FilePicker.platform.saveFile(
-            dialogTitle: 'Please select an output file:', fileName: '${device.name}.png', allowedExtensions: ['*.png']);
+            dialogTitle: AppStrings.dialogTitleSaveFilePicker, fileName: '${device.name}.png', allowedExtensions: ['*.png']);
       } else if (!kIsWeb && Platform.isAndroid) {
-        var directory = Directory("/storage/emulated/0/Download");
+        var directory = Directory(AppPaths.androidDownloadFolder);
         outputFile = '${directory.path}/${device.name}.png';
       } else {
         var directory = await getApplicationDocumentsDirectory();
@@ -275,7 +276,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
       if (outputFile != null) {
         var file = File(outputFile);
         file.writeAsBytes(imageData.buffer.asUint8List()).then((value) {
-          AppToast.show(context, ToastTypes.success, 'QR-code with device ID saved successfully.');
+          AppToast.show(context, ToastTypes.success, AppStrings.messageWifiQrCodeSaved);
         });
       }
     }
