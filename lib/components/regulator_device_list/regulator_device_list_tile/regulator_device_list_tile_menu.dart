@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/access_token_dialog.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
@@ -56,11 +58,23 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
       const PopupMenuItemDivider(),
       PopupMenuItem(
         child: const Row(children: [
+          Icon(Icons.qr_code_scanner),
+          SizedBox(
+            width: 10,
+          ),
+          Text(AppStrings.menuShowQRCodeId)
+        ]),
+        onTap: () async {
+          await _showWifiDeviceQrCode();
+        },
+      ),
+      PopupMenuItem(
+        child: const Row(children: [
           Icon(Icons.qr_code),
           SizedBox(
             width: 10,
           ),
-          Text(AppStrings.menuQRCodeId)
+          Text(AppStrings.menuDownloadQRCodeId)
         ]),
         onTap: () async {
           await _saveWifiDeviceQrCode();
@@ -175,9 +189,9 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
     }
   }
 
-  Future<void> _saveWifiDeviceQrCode() async {
+  Future<ByteData?> _getWifiDeviceQrCode() async {
     var painter = QrPainter(
-      data: 'WIFI:S:${device.name};T:WPA;P:123456789;;',
+      data: 'WIFI:S:${device.name};T:WPA2;P:12345678;;',
       // ignore: deprecated_member_use
       emptyColor: Colors.white,
       version: QrVersions.auto,
@@ -189,6 +203,61 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
     );
 
     var imageData = await painter.toImageData(1024, format: ImageByteFormat.png);
+
+    return imageData;
+  }
+
+  Future<void> _showWifiDeviceQrCode() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AppBaseDialog(
+            context: context,
+            titleText: AppStrings.dialogWifiQRCode,
+            titleIcon: Icons.qr_code_scanner,
+            content: Center(
+              heightFactor: 1.1,
+              widthFactor: 2,
+              child: SizedBox(
+                width: 300,
+                height: 300,
+                child: Column(
+                  children: [
+                    QrImageView(
+                        data: 'WIFI:S:${device.name};T:WPA2;P:12345678;;',
+                        size: 250,
+                        backgroundColor: Colors.white,
+                        version: QrVersions.auto,
+                        dataModuleStyle: const QrDataModuleStyle(
+                          color: Colors.black,
+                          dataModuleShape: QrDataModuleShape.square,
+                        ),
+                        errorCorrectionLevel: QrErrorCorrectLevel.H,
+                        semanticsLabel: device.name),
+                    Text(
+                      device.name,
+                      style: const TextStyle(fontSize: 20),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              AppElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const AppElevatedButtonLabel(
+                    label: AppStrings.buttonClose,
+                    icon: Icons.close,
+                  )),
+            ]);
+      },
+    );
+  }
+
+  Future<void> _saveWifiDeviceQrCode() async {
+    var imageData = await _getWifiDeviceQrCode();
 
     if (imageData != null) {
       String? outputFile;

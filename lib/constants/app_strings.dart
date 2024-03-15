@@ -1,6 +1,4 @@
 class AppStrings {
-
-
   static const String confirmAppExit = 'Do you really want to exit app?';
 
   static const String confirmRemoveDevice = 'Do you really want to remove %device% device?';
@@ -11,7 +9,7 @@ class AppStrings {
 
   static const buttonClose = 'CLOSE';
 
-  static const menuDownload = 'Download database';
+  static const menuGetBackup = 'Get backup';
 
   static const menuUpload = 'Upload deployment package';
 
@@ -29,7 +27,9 @@ class AppStrings {
 
   static const menuRemoveDevice = 'Remove device';
 
-  static const menuQRCodeId = 'Device Wifi QR-code';
+  static const menuDownloadQRCodeId = 'Download Wifi QR-code';
+
+  static const menuShowQRCodeId = 'Show Wifi QR-code';
 
   static const menuCreateAccessToken = 'Create access token';
 
@@ -41,11 +41,12 @@ class AppStrings {
 
   static const dialogTitleDeploy = 'Deployment';
 
+  static const dialogWifiQRCode = 'Wifi QR-code';
+
   static const dialogTitleConfirm = 'Confirm';
 
   static const messageDeploymentPackageNotFound =
       'The distributable package was not found. The deployment cannot be done!';
 
   static const messageVerificationFailed = 'Verification failed!';
-
 }

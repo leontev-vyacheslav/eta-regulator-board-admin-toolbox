@@ -59,6 +59,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
           'Deployment log of "${_device!.name}" device:',
         )),
         PopupMenuButton(
+          enabled: _menuEnable,
           itemBuilder: (context) {
             return [
               PopupMenuItem(
@@ -219,8 +220,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   Map<String, Object>? _getLastDistributable(String appName) {
     var distributableDir = Directory('$_deploymentPath/distro');
 
-    var distroFoldersInfo =
-        distributableDir.listSync().where((d) => d.path.contains(appName)).map((d) {
+    var distroFoldersInfo = distributableDir.listSync().where((d) => d.path.contains(appName)).map((d) {
       var folderName = basenameWithoutExtension(d.path);
       return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
     }).sortedBy((element) => element.keys.first);
@@ -364,7 +364,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   Future<void> _updateDeployment(DeviceWebApps webApp) async {
     var repository = getIt<DeploymentPackageRepository>();
     var appName = "${webApp == DeviceWebApps.webApi ? "web API" : "web UI"} application";
-    var downloadedFile = await repository.downloadDeploymentPackage(webApp);
+    var downloadedFile = await repository.download(webApp);
     if (downloadedFile != null) {
       var basePath = '$_deploymentPath/distro/${basenameWithoutExtension(downloadedFile.fileName)}';
 

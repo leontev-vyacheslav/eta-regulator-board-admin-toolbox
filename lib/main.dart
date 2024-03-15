@@ -18,6 +18,7 @@ void configureDependencies() {
   getIt.registerSingleton<AppHttpClientFactory>(AppHttpClientFactory());
   getIt.registerSingleton<RegulatorDeviceRepository>(RegulatorDeviceRepository());
   getIt.registerSingleton<DeploymentPackageRepository>(DeploymentPackageRepository());
+  getIt.registerSingleton<BackupRepository>(BackupRepository());
 }
 
 void main() async {

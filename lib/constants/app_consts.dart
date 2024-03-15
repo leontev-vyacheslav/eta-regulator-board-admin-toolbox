@@ -1,6 +1,8 @@
 class AppConsts {
   static const String companyTradeMark = 'ETA24™';
 
+  static const String appName = 'eta_regulator_board_admin';
+
   static const String appTitle = 'ETA Regulator Board Admin';
 
   static const String appVersion = 'v. 0.01';

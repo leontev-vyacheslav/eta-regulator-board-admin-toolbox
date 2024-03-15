@@ -1,13 +1,21 @@
+import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/deployment_package_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
-import 'package:eta_regulator_board_admin_toolbox/utils/file_helper.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/about_dialog.dart' as about_dialog;
-
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 class AppDrawer extends Drawer {
   final BuildContext context;
@@ -21,16 +29,38 @@ class AppDrawer extends Drawer {
         children: [
           AppDrawerHeader(scaffoldKey: scaffoldKey),
           ListTile(
-              leading: const Icon(Icons.download),
-              title: const Text(AppStrings.menuDownload),
+              leading: const Icon(Icons.backup),
+              title: const Text(AppStrings.menuGetBackup),
               visualDensity: const VisualDensity(vertical: 2),
               onTap: () async {
-                await FileHelper.downloadDevices().then((value) {
-                  if (value) {
-                    AppToast.show(
-                        context, ToastTypes.success, 'Regulator device list saved to a json file successfully.');
+                var repository = getIt<BackupRepository>();
+                var downloadedFile = await repository.get();
+                if (downloadedFile != null) {
+                  downloadedFile.fileName =
+                      '${AppConsts.appName}_${basenameWithoutExtension(downloadedFile.fileName)}_${DateFormat('yyyyMMddTHms').format(DateTime.now().toUtc())}${extension(downloadedFile.fileName)}';
+                  AppToast.show(context, ToastTypes.success, 'The database backup has been received.');
+
+                  String? outputFile;
+                  if (PlatformInfo.isDesktopOS()) {
+                    outputFile = await FilePicker.platform.saveFile(
+                        dialogTitle: 'Please select an output file:',
+                        fileName: downloadedFile.fileName,
+                        allowedExtensions: ['*.sqlite3']);
+                  } else if (!kIsWeb && Platform.isAndroid) {
+                    var directory = Directory("/storage/emulated/0/Download");
+                    outputFile = '${directory.path}/${downloadedFile.fileName}';
+                  } else {
+                    var directory = await getApplicationDocumentsDirectory();
+                    outputFile = '${directory.path}/${downloadedFile.fileName}';
                   }
-                });
+
+                  if (outputFile != null) {
+                    var file = File(outputFile);
+                    file.writeAsBytes(downloadedFile.buffer).then((value) {
+                      AppToast.show(context, ToastTypes.success, 'The database backup saved successfully.');
+                    });
+                  }
+                }
               }),
           const Divider(
             height: 1,
