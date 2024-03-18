@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AppElevatedButton extends ElevatedButton {
-  const AppElevatedButton({super.key, required super.onPressed, required super.child});
+  const AppElevatedButton({super.key, required super.onPressed, required super.child, super.style});
 
   @override
-  ButtonStyle? get style => ElevatedButton.styleFrom(
+  ButtonStyle? get style => super.style ?? ElevatedButton.styleFrom(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-      padding: const EdgeInsets.fromLTRB(15, 15, 20, 15));
+      padding: const EdgeInsets.fromLTRB(15, 15, 20, 15),
+  );
 }
 
 class AppElevatedButtonLabel extends Wrap {

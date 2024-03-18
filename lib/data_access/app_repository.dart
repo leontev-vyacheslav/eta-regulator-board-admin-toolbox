@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -12,9 +13,13 @@ class AppHttpClientFactory {
   Dio httpClient = Dio();
 
   AppHttpClientFactory() {
+    if (App.authUser != null) {
+      httpClient.options.headers = {...httpClient.options.headers, 'Authorization': 'Bearer ${App.authUser!.token}'};
+    }
+
     var baseUrl = productionBaseUrl;
-    debugLocalBaseUrl = productionBaseUrl;
-    
+    // debugLocalBaseUrl = productionBaseUrl;
+
     if (kDebugMode) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       if (PlatformInfo.isDesktopOS() || kIsWeb) {

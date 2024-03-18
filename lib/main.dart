@@ -1,4 +1,5 @@
 import 'package:eta_regulator_board_admin_toolbox/data_access/app_repository.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/auth_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +11,17 @@ import 'app.dart';
 
 import 'package:get_it/get_it.dart';
 
+import 'data_access/backup_repository.dart';
 import 'data_access/deployment_package_repository.dart';
 
 final getIt = GetIt.instance;
 
 void configureDependencies() {
-  getIt.registerSingleton<AppHttpClientFactory>(AppHttpClientFactory());
-  getIt.registerSingleton<RegulatorDeviceRepository>(RegulatorDeviceRepository());
-  getIt.registerSingleton<DeploymentPackageRepository>(DeploymentPackageRepository());
-  getIt.registerSingleton<BackupRepository>(BackupRepository());
+  getIt.registerFactory<AppHttpClientFactory>(() => AppHttpClientFactory());
+  getIt.registerFactory<RegulatorDeviceRepository>(() => RegulatorDeviceRepository());
+  getIt.registerFactory<DeploymentPackageRepository>(() => DeploymentPackageRepository());
+  getIt.registerFactory<BackupRepository>(() => BackupRepository());
+  getIt.registerFactory<AuthRepository>(() => AuthRepository());
 }
 
 void main() async {

@@ -1,7 +1,8 @@
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
-import 'package:eta_regulator_board_admin_toolbox/pages/home_page.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/auth_user_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/notifiers/regulator_devices_change_notifier.dart';
+import 'package:eta_regulator_board_admin_toolbox/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,8 @@ class App extends StatefulWidget {
   AppState createState() => AppState();
 
   static AppState of(BuildContext context) => context.findAncestorStateOfType<AppState>()!;
+
+  static AuthUserModel? authUser;
 }
 
 class AppState extends State<App> {
@@ -28,6 +31,7 @@ class AppState extends State<App> {
   }
 
   ThemeMode get themeMode => _themeMode;
+
 
   set themeMode(ThemeMode themeMode) {
     setState(() {
@@ -55,7 +59,7 @@ class AppState extends State<App> {
         themeMode: _themeMode,
         theme: ThemeData.light(),
         darkTheme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark)),
-        home: const HomePage(title: AppConsts.appTitle),
+        home: const LoginPage(),
         debugShowCheckedModeBanner: false,
       ),
     );

@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(5),
               child: Column(
                 children: [
-                  AppTitleBar(scaffoldKey: _scaffoldKey, context: context),
+                  AppTitleBar(scaffoldKey: _scaffoldKey, context: context, isShowMenu: true,),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
                     child: Row(

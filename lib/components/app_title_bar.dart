@@ -10,18 +10,22 @@ class AppTitleBar extends StatelessWidget {
   final BuildContext context;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const AppTitleBar({required this.scaffoldKey, super.key, required this.context});
+  final bool isShowMenu;
+
+  const AppTitleBar({required this.scaffoldKey, super.key, required this.context, required this.isShowMenu});
 
   Widget _getAppBarRow() {
     return Padding(
       padding: PlatformInfo.isDesktopOS() ? const EdgeInsets.fromLTRB(10, 10, 20, 10) : const EdgeInsets.only(top: 20),
       child: Row(children: [
-        IconButton(
-            iconSize: 32,
-            icon: const Icon(Icons.menu),
-            onPressed: () async {
-              scaffoldKey.currentState!.openDrawer();
-            }),
+        isShowMenu
+            ? IconButton(
+                iconSize: 32,
+                icon: const Icon(Icons.menu),
+                onPressed: () async {
+                  scaffoldKey.currentState!.openDrawer();
+                })
+            : const SizedBox.shrink(),
         Expanded(
           child: Text(AppConsts.appTitle,
               textAlign: TextAlign.center,
