@@ -2,7 +2,6 @@ import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
-import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/auth_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/pages/home_page.dart';

@@ -43,7 +43,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
 
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _textFieldScrollController = ScrollController();
-  final String _deploymentPath = kDebugMode ? AppPaths.debugDeploymentFolder: AppPaths.deploymentFolder;
+  final String _deploymentPath = kDebugMode ? AppPaths.debugDeploymentFolder : AppPaths.deploymentFolder;
 
   @override
   void initState() {
@@ -252,7 +252,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     }
 
     _process = await Process.start(
-      'pwsh.exe',
+      'pwsh',
       args,
     );
 
