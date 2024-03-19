@@ -2,6 +2,7 @@ import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_draw
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
@@ -34,15 +35,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
         key: _scaffoldKey,
         drawer: AppDrawer(scaffoldKey: _scaffoldKey, context: context),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await _showCreateRegulatorDialog();
+          },
+          shape: const CircleBorder(),
+          backgroundColor: colorScheme.secondaryContainer,
+          foregroundColor: colorScheme.onSecondaryContainer,
+          // backgroundColor: Colors.blueAccent,
+          // foregroundColor: Colors.white,
+          child: const Icon(Icons.add),
+        ),
         body: Consumer<RegulatorDevicesChangeNotifier>(
           builder: (context, value, child) => Padding(
               padding: const EdgeInsets.all(5),
               child: Column(
                 children: [
-                  AppTitleBar(scaffoldKey: _scaffoldKey, context: context, isShowMenu: true,),
+                  AppTitleBar(
+                    scaffoldKey: _scaffoldKey,
+                    context: context,
+                    isShowMenu: true,
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
                     child: Row(
@@ -51,45 +68,46 @@ class _HomePageState extends State<HomePage> {
                             child: Text(
                           'Regulator device list',
                         )),
-                        PopupMenuButton(
-                          itemBuilder: (context) {
-                            return [
-                              PopupMenuItem(
-                                onTap: () async {
-                                  var devices =
-                                      await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false)
-                                          .refresh();
-                                  if (devices != null) {
-                                    AppToast.show(context, ToastTypes.info, 'The regulator device list was refreshed.');
-                                  } else {
-                                    AppToast.show(
-                                        context, ToastTypes.error, 'An error was happened during of the  updating.');
-                                  }
-                                },
-                                child: const Row(children: [
-                                  Icon(Icons.refresh_outlined),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(AppStrings.menuRefresh)
-                                ]),
-                              ),
-                              const PopupMenuItemDivider(),
-                              PopupMenuItem(
-                                onTap: () async {
-                                  await _showCreateRegulatorDialog();
-                                },
-                                child: const Row(children: [
-                                  Icon(Icons.add),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(AppStrings.menuAddDevice)
-                                ]),
-                              ),
-                            ];
-                          },
-                        )
+                        // PopupMenuButton(
+                        //   icon: const Icon(Icons.menu_open_outlined),
+                        //   itemBuilder: (context) {
+                        //     return [
+                        //       PopupMenuItem(
+                        //         onTap: () async {
+                        //           var devices =
+                        //               await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false)
+                        //                   .refresh();
+                        //           if (devices != null) {
+                        //             AppToast.show(context, ToastTypes.info, 'The regulator device list was refreshed.');
+                        //           } else {
+                        //             AppToast.show(
+                        //                 context, ToastTypes.error, 'An error was happened during of the  updating.');
+                        //           }
+                        //         },
+                        //         child: const Row(children: [
+                        //           Icon(Icons.refresh_outlined),
+                        //           SizedBox(
+                        //             width: 10,
+                        //           ),
+                        //           Text(AppStrings.menuRefresh)
+                        //         ]),
+                        //       ),
+                        //       const PopupMenuItemDivider(),
+                        //       PopupMenuItem(
+                        //         onTap: () async {
+                        //           await _showCreateRegulatorDialog();
+                        //         },
+                        //         child: const Row(children: [
+                        //           Icon(Icons.add),
+                        //           SizedBox(
+                        //             width: 10,
+                        //           ),
+                        //           Text(AppStrings.menuAddDevice)
+                        //         ]),
+                        //       ),
+                        //     ];
+                        //   },
+                        // )
                       ],
                     ),
                   ),
@@ -102,6 +120,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _showCreateRegulatorDialog() async {
     var dialogResult = await showDialog<DialogResult<RegulatorDeviceModel?>>(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return RegulatorDeviceDialog(
             context: context,

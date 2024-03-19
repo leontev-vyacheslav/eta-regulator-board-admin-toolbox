@@ -18,7 +18,7 @@ class AppHttpClientFactory {
     }
 
     var baseUrl = productionBaseUrl;
-    // debugLocalBaseUrl = productionBaseUrl;
+    baseUrl = debugLocalBaseUrl;
 
     if (kDebugMode) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

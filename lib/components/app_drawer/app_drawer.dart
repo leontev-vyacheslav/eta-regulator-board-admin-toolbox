@@ -6,6 +6,7 @@ import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/main.dart';
+import 'package:eta_regulator_board_admin_toolbox/pages/login_page.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:file_picker/file_picker.dart';
@@ -90,6 +91,24 @@ class AppDrawer extends Drawer {
                     context, ToastTypes.info, 'Theme was changed to ${App.of(context).themeMode.name.toUpperCase()}');
               });
             },
+          ),
+          const Divider(
+            height: 1,
+            thickness: 1,
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout_outlined),
+            title: const Text('Logout'),
+            visualDensity: const VisualDensity(vertical: 2),
+            onTap: () async {
+              // Navigator.pop(context);
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginPage()));
+              App.authUser = null;
+            },
+          ),
+          const Divider(
+            height: 1,
+            thickness: 1,
           ),
           ListTile(
             leading: const Icon(Icons.exit_to_app),
