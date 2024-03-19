@@ -1,8 +1,6 @@
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
-import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
-import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
@@ -60,11 +58,11 @@ class _HomePageState extends State<HomePage> {
                     context: context,
                     isShowMenu: true,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(15, 0, 25, 0),
                     child: Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                             child: Text(
                           'Regulator device list',
                         )),
