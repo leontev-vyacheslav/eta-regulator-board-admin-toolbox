@@ -1,8 +1,8 @@
 import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
-import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/auth_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/pages/home_page.dart';
@@ -44,18 +44,9 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(
             toolbarHeight: 60,
             leading: Container(),
-            title: PlatformInfo.isDesktopOS()
-                ? AppTitleBar(
-                    scaffoldKey: _scaffoldKey,
-                    context: context,
-                  )
-                : Text(AppConsts.appTitle,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: AppColors.textAccent,
-                      fontSize: PlatformInfo.isDesktopOS() ? 22 : 18,
-                    ))),
+            title: AppTitleBar(
+              context: context,
+            )),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(5),
@@ -148,16 +139,19 @@ class _LoginPageState extends State<LoginPage> {
                                           builder: (context) => const HomePage(title: AppConsts.appTitle)),
                                     );
                                     AppToast.show(context, ToastTypes.success,
-                                        'The user ${authUser.login} was successfully authorized.',
+                                        AppStrings.messageUserSuccessLogin.replaceAll('%login%', authUser.login),
                                         duration: const Duration(seconds: 2));
                                   } else {
-                                    AppToast.show(context, ToastTypes.warning,
-                                        'The user ${_loginTextController.text} was not found or password was wrong.',
+                                    AppToast.show(
+                                        context,
+                                        ToastTypes.warning,
+                                        AppStrings.messageUserFailLogin
+                                            .replaceAll('%login%', _loginTextController.text),
                                         duration: const Duration(seconds: 2));
                                   }
                                 },
                                 child: const AppElevatedButtonLabel(
-                                  label: '     Login      ',
+                                  label: 'Login',
                                   icon: Icons.login_outlined,
                                 )),
                           ),

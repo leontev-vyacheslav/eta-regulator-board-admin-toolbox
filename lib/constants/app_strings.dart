@@ -3,6 +3,10 @@ class AppStrings {
 
   static const confirmRemoveDevice = 'Do you really want to remove %device% device?';
 
+  static const messageUserSuccessLogin = 'The user %login% was successfully authorized.';
+
+  static const messageUserFailLogin = 'The user %login% was not found or password was wrong.';
+
   static const buttonOk = 'OK';
 
   static const buttonCancel = 'CANCEL';
@@ -33,11 +37,11 @@ class AppStrings {
 
   static const menuCreateAccessToken = 'Create access token';
 
-  static const dialogTitleAccessToken = 'Create access token';
+  static const dialogTitleAccessToken = 'Create token';
 
   static const dialogTitleEditDevice = 'Edit device';
 
-  static const dialogTitleCreateDevice = 'Create new device';
+  static const dialogTitleCreateDevice = 'Create device';
 
   static const dialogTitleDeploy = 'Deployment';
 

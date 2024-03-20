@@ -8,37 +8,42 @@ import '../constants/app_colors.dart';
 
 class AppTitleBar extends StatelessWidget {
   final BuildContext context;
-  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const AppTitleBar({required this.scaffoldKey, super.key, required this.context});
+  const AppTitleBar({super.key, required this.context});
 
   Widget _getAppBarRow() {
-    return Padding(
-      padding: PlatformInfo.isDesktopOS() ? const EdgeInsets.fromLTRB(10, 10, 0, 10) : const EdgeInsets.all(0),
-      child: Row(children: [
-        Expanded(
-          child: Text(AppConsts.appTitle,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: AppColors.textAccent,
-                fontSize: PlatformInfo.isDesktopOS() ? 22 : 16,
-              )),
-        ),
-        PlatformInfo.isDesktopOS()
-            ? IconButton(
-                iconSize: 32,
-                icon: const Icon(Icons.close),
-                onPressed: () async {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AppExitDialog(context: context);
-                      });
-                })
-            : const SizedBox.shrink(),
-      ]),
-    );
+    return PlatformInfo.isDesktopOS()
+        ? Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+            child: Row(children: [
+              Expanded(
+                child: Text(AppConsts.appTitle,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColors.textAccent,
+                      fontSize: PlatformInfo.isDesktopOS() ? 22 : 16,
+                    )),
+              ),
+              IconButton(
+                  iconSize: 32,
+                  icon: const Icon(Icons.close),
+                  onPressed: () async {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AppExitDialog(context: context);
+                        });
+                  })
+            ]),
+          )
+        : Text(AppConsts.appTitle,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: AppColors.textAccent,
+              fontSize: PlatformInfo.isDesktopOS() ? 22 : 18,
+            ));
   }
 
   @override
