@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 String productionBaseUrl = 'http://eta24.ru:15020';
-String debugLocalBaseUrl = 'http://localhost:5020';
+String debugLocalBaseUrl = 'http://192.168.0.107:5020'; // 'http://localhost:5020';
 String debugEmulatorLocalBaseUrl = 'http://10.0.2.2:5020';
 
 class AppHttpClientFactory {

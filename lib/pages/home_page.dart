@@ -1,10 +1,13 @@
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
+import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -36,6 +39,27 @@ class _HomePageState extends State<HomePage> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
         key: _scaffoldKey,
+        appBar: AppBar(
+            toolbarHeight: 60,
+            leading: IconButton(
+                iconSize: 32,
+                icon: const Icon(Icons.menu),
+                onPressed: () async {
+                  _scaffoldKey.currentState!.openDrawer();
+                }),
+            centerTitle: true,
+            title: PlatformInfo.isDesktopOS()
+                ? AppTitleBar(
+                    scaffoldKey: _scaffoldKey,
+                    context: context,
+                  )
+                : Text(AppConsts.appTitle,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColors.textAccent,
+                      fontSize: PlatformInfo.isDesktopOS() ? 22 : 18,
+                    ))),
         drawer: AppDrawer(scaffoldKey: _scaffoldKey, context: context),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
@@ -49,16 +73,11 @@ class _HomePageState extends State<HomePage> {
           child: const Icon(Icons.add),
         ),
         body: Consumer<RegulatorDevicesChangeNotifier>(
-          builder: (context, value, child) => Padding(
-              padding: const EdgeInsets.all(5),
+          builder: (context, value, child) => const Padding(
+              padding: EdgeInsets.all(5),
               child: Column(
                 children: [
-                  AppTitleBar(
-                    scaffoldKey: _scaffoldKey,
-                    context: context,
-                    isShowMenu: true,
-                  ),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.fromLTRB(15, 0, 25, 0),
                     child: Row(
                       children: [
@@ -109,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  const RegulatorDeviceList()
+                  RegulatorDeviceList()
                 ],
               )),
         ));
