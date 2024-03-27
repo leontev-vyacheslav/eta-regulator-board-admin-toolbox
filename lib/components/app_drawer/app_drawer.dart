@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer_header.dart';
-import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_exit_dialog.dart';
@@ -14,9 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/app.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/about_dialog.dart' as about_dialog;
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 import '../../data_access/backup_repository.dart';
 
@@ -39,16 +36,16 @@ class AppDrawer extends Drawer {
                 var repository = getIt<BackupRepository>();
                 var downloadedFile = await repository.get();
                 if (downloadedFile != null) {
-                  downloadedFile.fileName =
-                      '${AppConsts.appName}_${basenameWithoutExtension(downloadedFile.fileName)}_${DateFormat('yyyyMMddTHms').format(DateTime.now().toUtc())}${extension(downloadedFile.fileName)}';
                   AppToast.show(context, ToastTypes.success, AppStrings.messageBackupReceived);
 
                   String? outputFile;
                   if (PlatformInfo.isDesktopOS()) {
+                    var appDocumentsDir = await getApplicationDocumentsDirectory();
                     outputFile = await FilePicker.platform.saveFile(
                         dialogTitle: AppStrings.dialogTitleSaveFilePicker,
+                        initialDirectory: appDocumentsDir.path,
                         fileName: downloadedFile.fileName,
-                        allowedExtensions: ['*.sqlite3']);
+                        allowedExtensions: ['*.zip']);
                   } else if (!kIsWeb && Platform.isAndroid) {
                     var directory = Directory(AppPaths.androidDownloadFolder);
                     outputFile = '${directory.path}/${downloadedFile.fileName}';
