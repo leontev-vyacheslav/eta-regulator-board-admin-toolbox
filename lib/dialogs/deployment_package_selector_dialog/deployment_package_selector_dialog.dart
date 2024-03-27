@@ -3,11 +3,13 @@ import 'package:eta_regulator_board_admin_toolbox/constants/app_colors.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/distro_folder__info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class DeploymentPackageSelectorForm extends StatefulWidget {
   final Key? formKey;
-  final List<String> deploymentPackageList;
+  final List<DistroFolderInfo> deploymentPackageList;
 
   const DeploymentPackageSelectorForm({super.key, this.formKey, required this.deploymentPackageList});
 
@@ -17,7 +19,7 @@ class DeploymentPackageSelectorForm extends StatefulWidget {
 
 class _DeploymentPackageSelectorFormState extends State<DeploymentPackageSelectorForm> {
   Key? _formKey;
-  String? _dropdownValue;
+  DistroFolderInfo? _dropdownValue;
 
   @override
   void initState() {
@@ -31,36 +33,43 @@ class _DeploymentPackageSelectorFormState extends State<DeploymentPackageSelecto
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: Form(
+            child: FormBuilder(
                 key: _formKey,
                 child: SizedBox(
-                  width: 360,
-                  child: DropdownMenu<String>(
-                    width: 360,
+                  width: 480,
+                  child: FormBuilderDropdown(
+                    isExpanded: true,
+                    name: 'packageName',
                     enabled: widget.deploymentPackageList.isNotEmpty,
-                    initialSelection: _dropdownValue,
-                    dropdownMenuEntries: widget.deploymentPackageList.map<DropdownMenuEntry<String>>((String value) {
-                      return DropdownMenuEntry<String>(
+                    initialValue: _dropdownValue,
+                    items: widget.deploymentPackageList.map((DistroFolderInfo value) {
+                      return DropdownMenuItem(
                         value: value,
-                        label: value,
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Icon(Icons.web_outlined),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(value.name)
+                          ],
+                        ),
                       );
                     }).toList(),
-                    onSelected: (String? value) {
-                      setState(() {
-                        _dropdownValue = value!;
-                      });
-                    },
                   ),
                 ))));
   }
 }
 
 class DeploymentPackageSelectorDialog extends AppBaseDialog {
-  final List<String> deploymentPackageList;
-  final _formKey = GlobalKey<FormState>();
+  final List<DistroFolderInfo> deploymentPackageList;
+  final _formKey = GlobalKey<FormBuilderState>();
 
   DeploymentPackageSelectorDialog(
-      {super.key, required super.context, required super.titleText, required this.deploymentPackageList});
+      {super.key, required super.context, super.titleText='Package selector', required this.deploymentPackageList});
 
   @override
   Widget? get content => DeploymentPackageSelectorForm(deploymentPackageList: deploymentPackageList, formKey: _formKey);
@@ -69,8 +78,13 @@ class DeploymentPackageSelectorDialog extends AppBaseDialog {
   List<Widget>? get actions => [
         AppElevatedButton(
             onPressed: () {
-              Navigator.pop<DialogResult<String?>>(
-                  context, DialogResult<String?>(result: ModalResults.ok, value: null));
+              _formKey.currentState!.save();
+              if (_formKey.currentState!.validate()) {
+                var value = _formKey.currentState!.value;
+
+                Navigator.pop<DialogResult<DistroFolderInfo?>>(
+                    context, DialogResult<DistroFolderInfo?>(result: ModalResults.ok, value: value['packageName']));
+              }
             },
             child: const AppElevatedButtonLabel(
               label: AppStrings.buttonOk,
@@ -79,8 +93,7 @@ class DeploymentPackageSelectorDialog extends AppBaseDialog {
             )),
         AppElevatedButton(
             onPressed: () {
-              Navigator.pop<DialogResult<String?>>(
-                  context, DialogResult<String?>(result: ModalResults.cancel, value: null));
+              Navigator.pop<DialogResult>(context, DialogResult(result: ModalResults.cancel, value: null));
             },
             child: const AppElevatedButtonLabel(
               label: AppStrings.buttonCancel,

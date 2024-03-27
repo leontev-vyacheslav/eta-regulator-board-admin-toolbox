@@ -82,7 +82,7 @@ class AccessTokenDialog extends AppBaseDialog {
   void copyToClipboard() {
     if (_accessTokenEditingController!.text.isNotEmpty) {
       Clipboard.setData(ClipboardData(text: _accessTokenEditingController!.text)).then((_) {
-        AppToast.show(context, ToastTypes.success, 'New access token copied', duration: const Duration(seconds: 2));
+        AppToast.show(context, ToastTypes.success, 'New access token copied', duration: const Duration(seconds: 3));
       });
     }
   }

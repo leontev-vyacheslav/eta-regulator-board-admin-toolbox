@@ -12,6 +12,7 @@ import 'package:eta_regulator_board_admin_toolbox/data_access/deployment_package
 import 'package:eta_regulator_board_admin_toolbox/dialogs/deployment_package_selector_dialog/deployment_package_selector_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/distro_folder__info.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/foundation.dart';
@@ -97,19 +98,23 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
               PopupMenuItem(
                 enabled: _menuEnable,
                 onTap: () async {
-                  var dialogResult = await showDialog<DialogResult<String?>>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return DeploymentPackageSelectorDialog(
-                          context: context,
-                          titleText: 'Package selector',
-                          deploymentPackageList:
-                              _getDistributableList('web_ui')!.map((e) => e['name'].toString()).toList(),
-                        );
-                      });
-                  if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
-                    await _deploy(DeviceWebApps.webUi);
+                  var distroFolders = _getDistributableList('web_ui');
+                  if (distroFolders != null) {
+                    var dialogResult = await showDialog<DialogResult>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return DeploymentPackageSelectorDialog(
+                            context: context,
+                            deploymentPackageList: distroFolders,
+                          );
+                        });
+                    if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
+                      await _deploy(DeviceWebApps.webUi, distroFolder: dialogResult.value);
+                    }
+                  } else {
+                    AppToast.show(context, ToastTypes.warning, 'Missing Web UI deployment packages!',
+                        duration: const Duration(seconds: 3));
                   }
                 },
                 child: const Row(children: [
@@ -123,7 +128,24 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
               PopupMenuItem(
                 enabled: _menuEnable,
                 onTap: () async {
-                  await _deploy(DeviceWebApps.webApi);
+                  var distroFolders = _getDistributableList('web_api');
+                  if (distroFolders != null) {
+                    var dialogResult = await showDialog<DialogResult>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return DeploymentPackageSelectorDialog(
+                            context: context,
+                            deploymentPackageList: distroFolders,
+                          );
+                        });
+                    if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
+                      await _deploy(DeviceWebApps.webApi, distroFolder: dialogResult.value);
+                    }
+                  } else {
+                    AppToast.show(context, ToastTypes.warning, 'Missing Web API deployment packages!',
+                        duration: const Duration(seconds: 3));
+                  }
                 },
                 child: const Row(children: [
                   Icon(Icons.api_outlined),
@@ -233,18 +255,18 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     }
   }
 
-  List<Map<String, Object>>? _getDistributableList(String appName) {
+  List<DistroFolderInfo>? _getDistributableList(String appName) {
     var distributableDir = Directory('$_deploymentPath/distro');
 
     var distroFoldersInfo = distributableDir.listSync().where((d) => d.path.contains(appName)).map((d) {
       var folderName = basenameWithoutExtension(d.path);
-      return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
-    }).sortedBy((element) => element.keys.first);
+      return DistroFolderInfo(name: folderName, date: DateTime.parse(folderName.split('_').last));
+    }).sortedBy((element) => element.date);
 
     return distroFoldersInfo;
   }
 
-  Map<String, Object>? _getLastDistributable(String appName) {
+  DistroFolderInfo? _getLastDistributable(String appName) {
     var distroFoldersInfo = _getDistributableList(appName);
 
     if (distroFoldersInfo != null && distroFoldersInfo.isNotEmpty) {
@@ -349,9 +371,11 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
         duration: const Duration(seconds: 5));
   }
 
-  Future<void> _deploy(DeviceWebApps webApp, {bool clearLog = true, bool checkConnection = true}) async {
+  Future<void> _deploy(DeviceWebApps webApp,
+      {DistroFolderInfo? distroFolder, bool clearLog = true, bool checkConnection = true}) async {
     var appName = webApp == DeviceWebApps.webApi ? 'web_api' : 'web_ui';
-    var distroFolder = _getLastDistributable(appName);
+    distroFolder ??= _getLastDistributable(appName);
+
     if (distroFolder == null) {
       AppToast.show(widget.context, ToastTypes.warning, AppStrings.messageDeploymentPackageNotFound,
           duration: const Duration(seconds: 5));
@@ -369,7 +393,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       '-root',
       _deploymentPath,
       '-distro',
-      distroFolder.entries.first.value as String,
+      distroFolder.name,
       '-masterKey',
       _device!.masterKey,
     ];

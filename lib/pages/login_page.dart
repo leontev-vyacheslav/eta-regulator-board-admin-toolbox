@@ -140,14 +140,14 @@ class _LoginPageState extends State<LoginPage> {
                                     );
                                     AppToast.show(context, ToastTypes.success,
                                         AppStrings.messageUserSuccessLogin.replaceAll('%login%', authUser.login),
-                                        duration: const Duration(seconds: 2));
+                                        duration: const Duration(seconds: 3));
                                   } else {
                                     AppToast.show(
                                         context,
                                         ToastTypes.warning,
                                         AppStrings.messageUserFailLogin
                                             .replaceAll('%login%', _loginTextController.text),
-                                        duration: const Duration(seconds: 2));
+                                        duration: const Duration(seconds: 3));
                                   }
                                 },
                                 child: const AppElevatedButtonLabel(

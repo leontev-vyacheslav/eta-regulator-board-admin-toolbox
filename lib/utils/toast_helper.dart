@@ -8,7 +8,7 @@ class AppToast {
   static List<IconData> icons = [Icons.check, Icons.info, Icons.error, Icons.warning];
 
   static void show(BuildContext context, ToastTypes type, String text,
-      {Duration duration = const Duration(seconds: 2)}) {
+      {Duration duration = const Duration(seconds: 3)}) {
     FToast().init(context).showToast(
           child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
