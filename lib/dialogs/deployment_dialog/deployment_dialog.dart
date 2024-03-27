@@ -8,25 +8,14 @@ import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.
 import 'deployment_dialog_form.dart';
 
 class DeploymentDialog extends AppBaseDialog {
-  // IO.Socket? socket;
   final RegulatorDeviceModel device;
 
-  DeploymentDialog(
+  const DeploymentDialog(
       {super.key,
       required super.context,
       required super.titleText,
       super.titleIcon = Icons.install_desktop_outlined,
-      required this.device}) {
-    // socket = IO.io('http://192.168.0.107:5020', <String, dynamic>{
-    //     'transports': ['websocket'],
-    //     'autoConnect': false,
-    //   });
-  }
-
-  // socket!.connect();
-  // socket!.on('message', (data) {
-  //   debugPrint('Received message: $data');
-  // });
+      required this.device});
 
   @override
   Widget? get content => DeploymentDialogForm(

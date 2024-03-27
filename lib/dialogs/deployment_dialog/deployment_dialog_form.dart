@@ -9,7 +9,9 @@ import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/deployment_package_repository.dart';
+import 'package:eta_regulator_board_admin_toolbox/dialogs/deployment_package_selector_dialog/deployment_package_selector_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/main.dart';
+import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/toast_helper.dart';
 import 'package:flutter/foundation.dart';
@@ -95,7 +97,20 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
               PopupMenuItem(
                 enabled: _menuEnable,
                 onTap: () async {
-                  await _deploy(DeviceWebApps.webUi);
+                  var dialogResult = await showDialog<DialogResult<String?>>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return DeploymentPackageSelectorDialog(
+                          context: context,
+                          titleText: 'Package selector',
+                          deploymentPackageList:
+                              _getDistributableList('web_ui')!.map((e) => e['name'].toString()).toList(),
+                        );
+                      });
+                  if (dialogResult!.result == ModalResults.ok && dialogResult.value != null) {
+                    await _deploy(DeviceWebApps.webUi);
+                  }
                 },
                 child: const Row(children: [
                   Icon(Icons.web_outlined),
@@ -218,7 +233,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     }
   }
 
-  Map<String, Object>? _getLastDistributable(String appName) {
+  List<Map<String, Object>>? _getDistributableList(String appName) {
     var distributableDir = Directory('$_deploymentPath/distro');
 
     var distroFoldersInfo = distributableDir.listSync().where((d) => d.path.contains(appName)).map((d) {
@@ -226,7 +241,13 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       return {'name': folderName, 'date': DateTime.parse(folderName.split('_').last)};
     }).sortedBy((element) => element.keys.first);
 
-    if (distroFoldersInfo.isNotEmpty) {
+    return distroFoldersInfo;
+  }
+
+  Map<String, Object>? _getLastDistributable(String appName) {
+    var distroFoldersInfo = _getDistributableList(appName);
+
+    if (distroFoldersInfo != null && distroFoldersInfo.isNotEmpty) {
       return distroFoldersInfo.last;
     }
 
