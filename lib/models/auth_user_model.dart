@@ -9,6 +9,10 @@ class AuthUserModel {
 
   AuthUserModel({required this.token, required this.login});
 
+  static AuthUserModel of(AuthUserModel authUser) {
+    return AuthUserModel(token: authUser.token, login: authUser.login);
+  }
+
   // Connect the generated [_$AuthUserModelJson] function to the `fromJson`
   /// factory.
   factory AuthUserModel.fromJson(Map<String, dynamic> json) => _$AuthUserModelFromJson(json);

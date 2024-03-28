@@ -1,5 +1,6 @@
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/regulator_device_repository.dart';
+import 'package:eta_regulator_board_admin_toolbox/main.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/auth_user_model.dart';
 import 'package:eta_regulator_board_admin_toolbox/notifiers/regulator_devices_change_notifier.dart';
 import 'package:eta_regulator_board_admin_toolbox/pages/login_page.dart';
@@ -18,6 +19,10 @@ class App extends StatefulWidget {
   static AppState of(BuildContext context) => context.findAncestorStateOfType<AppState>()!;
 
   static AuthUserModel? authUser;
+
+  static void unauthorize() {
+    App.authUser = null;
+  }
 }
 
 class AppState extends State<App> {
@@ -31,7 +36,6 @@ class AppState extends State<App> {
   }
 
   ThemeMode get themeMode => _themeMode;
-
 
   set themeMode(ThemeMode themeMode) {
     setState(() {
@@ -61,6 +65,7 @@ class AppState extends State<App> {
         darkTheme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark)),
         home: const LoginPage(),
         debugShowCheckedModeBanner: false,
+        navigatorKey: globalNavigatorKey,
       ),
     );
   }

@@ -15,6 +15,7 @@ import 'data_access/backup_repository.dart';
 import 'data_access/deployment_package_repository.dart';
 
 final getIt = GetIt.instance;
+final globalNavigatorKey = GlobalKey<NavigatorState>();
 
 void configureDependencies() {
   getIt.registerFactory<AppHttpClientFactory>(() => AppHttpClientFactory());
