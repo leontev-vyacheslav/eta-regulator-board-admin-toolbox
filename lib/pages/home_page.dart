@@ -1,5 +1,6 @@
 import 'package:eta_regulator_board_admin_toolbox/components/app_drawer/app_drawer.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_title_bar.dart';
+import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/regulator_device_list/regulator_device_list.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/regulator_device_dialog/regulator_device_dialog.dart';
@@ -61,62 +62,62 @@ class _HomePageState extends State<HomePage> {
           child: const Icon(Icons.add),
         ),
         body: Consumer<RegulatorDevicesChangeNotifier>(
-          builder: (context, value, child) => const Padding(
+          builder: (context, value, child) => Padding(
               padding: EdgeInsets.all(5),
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(15, 0, 25, 0),
+                    padding: const EdgeInsets.fromLTRB(15, 0, 25, 0),
                     child: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                             child: Text(
                           'Regulator device list',
                         )),
-                        // PopupMenuButton(
-                        //   icon: const Icon(Icons.menu_open_outlined),
-                        //   itemBuilder: (context) {
-                        //     return [
-                        //       PopupMenuItem(
-                        //         onTap: () async {
-                        //           var devices =
-                        //               await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false)
-                        //                   .refresh();
-                        //           if (devices != null) {
-                        //             AppToast.show(context, ToastTypes.info, 'The regulator device list was refreshed.');
-                        //           } else {
-                        //             AppToast.show(
-                        //                 context, ToastTypes.error, 'An error was happened during of the  updating.');
-                        //           }
-                        //         },
-                        //         child: const Row(children: [
-                        //           Icon(Icons.refresh_outlined),
-                        //           SizedBox(
-                        //             width: 10,
-                        //           ),
-                        //           Text(AppStrings.menuRefresh)
-                        //         ]),
-                        //       ),
-                        //       const PopupMenuItemDivider(),
-                        //       PopupMenuItem(
-                        //         onTap: () async {
-                        //           await _showCreateRegulatorDialog();
-                        //         },
-                        //         child: const Row(children: [
-                        //           Icon(Icons.add),
-                        //           SizedBox(
-                        //             width: 10,
-                        //           ),
-                        //           Text(AppStrings.menuAddDevice)
-                        //         ]),
-                        //       ),
-                        //     ];
-                        //   },
-                        // )
+                        PopupMenuButton(
+                          icon: const Icon(Icons.more_vert),
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                onTap: () async {
+                                  var devices =
+                                      await Provider.of<RegulatorDevicesChangeNotifier>(context, listen: false)
+                                          .refresh();
+                                  if (devices != null) {
+                                    AppToast.show(context, ToastTypes.info, 'The regulator device list was refreshed.');
+                                  } else {
+                                    AppToast.show(
+                                        context, ToastTypes.error, 'An error was happened during of the  updating.');
+                                  }
+                                },
+                                child: const Row(children: [
+                                  Icon(Icons.refresh_outlined),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(AppStrings.menuRefresh)
+                                ]),
+                              ),
+                              const PopupMenuItemDivider(),
+                              PopupMenuItem(
+                                onTap: () async {
+                                  await _showCreateRegulatorDialog();
+                                },
+                                child: const Row(children: [
+                                  Icon(Icons.add),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(AppStrings.menuAddDevice)
+                                ]),
+                              ),
+                            ];
+                          },
+                        )
                       ],
                     ),
                   ),
-                  RegulatorDeviceList()
+                  const RegulatorDeviceList()
                 ],
               )),
         ));

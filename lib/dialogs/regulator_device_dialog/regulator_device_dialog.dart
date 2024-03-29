@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'regulator_device_dialog_form.dart';
 
-class RegulatorDeviceDialog extends AppBaseDialog {
+class RegulatorDeviceDialog extends AppBaseDialog<RegulatorDeviceModel?> {
   final RegulatorDeviceModel? device;
   final _formKey = GlobalKey<FormState>();
 

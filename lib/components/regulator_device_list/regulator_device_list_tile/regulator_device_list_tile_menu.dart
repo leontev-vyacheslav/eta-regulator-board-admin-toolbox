@@ -117,6 +117,7 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
 
     return Consumer<RegulatorDevicesChangeNotifier>(
       builder: (context, value, child) => PopupMenuButton(
+        icon: const Icon(Icons.more_horiz_outlined),
         itemBuilder: (context) {
           return menuItems;
         },
@@ -264,7 +265,9 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
       String? outputFile;
       if (PlatformInfo.isDesktopOS()) {
         outputFile = await FilePicker.platform.saveFile(
-            dialogTitle: AppStrings.dialogTitleSaveFilePicker, fileName: '${device.name}.png', allowedExtensions: ['*.png']);
+            dialogTitle: AppStrings.dialogTitleSaveFilePicker,
+            fileName: '${device.name}.png',
+            allowedExtensions: ['*.png']);
       } else if (!kIsWeb && Platform.isAndroid) {
         var directory = Directory(AppPaths.androidDownloadFolder);
         outputFile = '${directory.path}/${device.name}.png';
