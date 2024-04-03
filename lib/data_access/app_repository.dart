@@ -1,15 +1,10 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:eta_regulator_board_admin_toolbox/app.dart';
-import 'package:eta_regulator_board_admin_toolbox/data_access/auth_repository.dart';
-import 'package:eta_regulator_board_admin_toolbox/main.dart';
-import 'package:eta_regulator_board_admin_toolbox/models/auth_user_model.dart';
-import 'package:eta_regulator_board_admin_toolbox/pages/login_page.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/loader_interceptor.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/refresh_token_interceptor.dart';
 import 'package:eta_regulator_board_admin_toolbox/utils/platform_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 String productionBaseUrl = 'http://eta24.ru:15020';
 String debugLocalBaseUrl = 'http://127.0.0.1:5020';
@@ -34,70 +29,7 @@ class AppHttpClientFactory {
     }
     httpClient.options.baseUrl = baseUrl;
 
-    httpClient.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
-      globalNavigatorKey.currentContext!.loaderOverlay.show();
-      await Future.delayed(const Duration(milliseconds: 125));
-
-      return handler.next(options);
-    }, onResponse: (response, handler) async {
-      await Future.delayed(const Duration(milliseconds: 125));
-      if (globalNavigatorKey.currentContext!.loaderOverlay.visible) {
-        globalNavigatorKey.currentContext!.loaderOverlay.hide();
-      }
-
-      return handler.next(response);
-    }, onError: (DioException e, handler) async {
-      if (globalNavigatorKey.currentContext!.loaderOverlay.visible) {
-        globalNavigatorKey.currentContext!.loaderOverlay.hide();
-      }
-
-      return handler.next(e);
-    }));
-
-    httpClient.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        if (App.authUser != null) {
-          httpClient.options.headers = {
-            ...httpClient.options.headers,
-            'Authorization': 'Bearer ${App.authUser!.token}'
-          };
-        }
-
-        return handler.next(options);
-      },
-      onResponse: (response, handler) async {
-        return handler.next(response);
-      },
-      onError: (DioException e, handler) async {
-        if (e.response?.statusCode == 401) {
-          if (App.authUser != null) {
-            var newAuthUser = AuthUserModel.of(App.authUser!);
-            App.unauthorize();
-
-            try {
-              var response =
-                  await httpClient.get('${AuthRepository.endPoint}/refresh-token', data: newAuthUser.toJson());
-              if (response.statusCode == 200) {
-                App.authUser = AuthUserModel.fromJson(response.data);
-              }
-            } on DioException catch (e) {
-              if (e.response!.statusCode == 403) {
-                globalNavigatorKey.currentState!
-                    .pushReplacement(MaterialPageRoute(builder: (context) => const LoginPage()));
-                App.unauthorize();
-              }
-            }
-
-            e.requestOptions.headers = {
-              ...httpClient.options.headers,
-              'Authorization': 'Bearer ${App.authUser!.token}'
-            };
-
-            return handler.resolve(await httpClient.fetch(e.requestOptions));
-          }
-        }
-        return handler.next(e);
-      },
-    ));
+    httpClient.interceptors.add(LoaderInterceptor());
+    httpClient.interceptors.add(RefreshTokenInterceptor(httpClient));
   }
 }
