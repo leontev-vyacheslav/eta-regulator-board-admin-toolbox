@@ -6,14 +6,14 @@ class LoaderInterceptor extends InterceptorsWrapper {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     globalNavigatorKey.currentContext!.loaderOverlay.show();
-    await Future.delayed(const Duration(milliseconds: 125));
+    await Future.delayed(const Duration(milliseconds: 250));
 
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
-    await Future.delayed(const Duration(milliseconds: 125));
+    await Future.delayed(const Duration(milliseconds: 250));
     if (globalNavigatorKey.currentContext!.loaderOverlay.visible) {
       globalNavigatorKey.currentContext!.loaderOverlay.hide();
     }

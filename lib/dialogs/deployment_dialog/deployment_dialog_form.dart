@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:dio/dio.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/popup_menu_item_divider.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_consts.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_paths.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
+import 'package:eta_regulator_board_admin_toolbox/data_access/app_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/data_access/deployment_package_repository.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/deployment_package_selector_dialog/deployment_package_selector_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/main.dart';
@@ -21,6 +21,7 @@ import 'package:path/path.dart';
 import 'dart:core';
 import 'package:html/parser.dart';
 import 'package:collection/collection.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../models/device_web_apps.dart';
 
@@ -282,9 +283,14 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       _process = null;
       _isDeploymentProcessActive = false;
     }
+    if (widget.context.loaderOverlay.visible) {
+      widget.context.loaderOverlay.hide();
+    }
   }
 
   Future<void> _startScriptProcess(DeviceWebApps webApp, List<String> args, {bool clearLog = true}) async {
+    widget.context.loaderOverlay.show();
+
     if (_process != null) {
       _process!.kill();
       _process = null;
@@ -312,6 +318,10 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
         _menuEnable = true;
         _isDeploymentProcessActive = false;
         _process = null;
+
+        if (widget.context.loaderOverlay.visible) {
+          widget.context.loaderOverlay.hide();
+        }
       });
     });
   }
@@ -333,8 +343,9 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
       _textEditingController.text += 'The deploy verification on progress...\n';
     }
 
-    var httpClient = Dio();
     try {
+      var httpClient = getIt<AppHttpClientFactory>().httpClient;
+
       var webApiResponse = await httpClient.get('http://${widget.device.name}:$webAppPort');
 
       if (webApiResponse.statusCode == 200) {

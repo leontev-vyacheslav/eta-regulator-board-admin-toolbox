@@ -63,8 +63,8 @@ class AppState extends State<App> {
       ],
       child: GlobalLoaderOverlay(
         useDefaultLoading: false,
+        overlayColor: Colors.transparent,
         overlayWidgetBuilder: (_) {
-          //ignored progress for the moment
           return const Center(
             child: SpinKitWave(
               color: AppColors.textAccent,
