@@ -117,6 +117,9 @@ class RegulatorDeviceListTileMenu extends StatelessWidget {
 
     return Consumer<RegulatorDevicesChangeNotifier>(
       builder: (context, value, child) => PopupMenuButton(
+        onOpened: () {
+          context.read<RegulatorDevicesChangeNotifier>().selectedDeviceId = device.id;
+        },
         icon: const Icon(Icons.more_horiz_outlined),
         itemBuilder: (context) {
           return menuItems;

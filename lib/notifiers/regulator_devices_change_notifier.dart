@@ -5,7 +5,10 @@ import 'package:flutter/foundation.dart';
 
 class RegulatorDevicesChangeNotifier extends ChangeNotifier {
   final List<RegulatorDeviceModel> _items = [];
-  final RegulatorDeviceRepository repository  = getIt<RegulatorDeviceRepository>();
+
+  final RegulatorDeviceRepository repository = getIt<RegulatorDeviceRepository>();
+
+  String? _selectedDeviceId;
 
   RegulatorDevicesChangeNotifier() {
     repository.getList().then((devices) {
@@ -15,6 +18,13 @@ class RegulatorDevicesChangeNotifier extends ChangeNotifier {
       }
     });
   }
+
+  set selectedDeviceId(String? deviceId) {
+    _selectedDeviceId = deviceId;
+    notifyListeners();
+  }
+
+  String? get selectedDeviceId => _selectedDeviceId;
 
   List<RegulatorDeviceModel> get items => _items;
 

@@ -26,10 +26,7 @@ class _RegulatorDeviceListState extends State<RegulatorDeviceList> {
     var devices = Provider.of<RegulatorDevicesChangeNotifier>(context).items;
 
     return Expanded(
-      child: ListView(
-        
-        children: _getListItems(context, devices),
-      ),
+      child: ListView(children: _getListItems(context, devices)),
     );
   }
 }

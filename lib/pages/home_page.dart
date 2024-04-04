@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Consumer<RegulatorDevicesChangeNotifier>(
           builder: (context, value, child) => Padding(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               child: Column(
                 children: [
                   Padding(
