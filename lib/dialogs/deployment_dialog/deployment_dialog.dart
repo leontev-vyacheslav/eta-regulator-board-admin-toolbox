@@ -1,9 +1,11 @@
+import 'package:eta_regulator_board_admin_toolbox/dialogs/deployment_dialog/deployment_dialog_form_context.dart';
 import 'package:flutter/material.dart';
 import 'package:eta_regulator_board_admin_toolbox/components/app_elevated_button.dart';
 import 'package:eta_regulator_board_admin_toolbox/constants/app_strings.dart';
 import 'package:eta_regulator_board_admin_toolbox/dialogs/app_base_dialog.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/dialog_result.dart';
 import 'package:eta_regulator_board_admin_toolbox/models/regulator_device_model.dart';
+import 'package:provider/provider.dart';
 
 import 'deployment_dialog_form.dart';
 
@@ -18,9 +20,12 @@ class DeploymentDialog extends AppBaseDialog {
       required this.device});
 
   @override
-  Widget? get content => DeploymentDialogForm(
-        device: device,
-        context: context,
+  Widget? get content => Provider<DeploymentDialogFormContext>(
+        create: (_) => DeploymentDialogFormContext(),
+        child: DeploymentDialogForm(
+          device: device,
+          context: context,
+        ),
       );
 
   @override
