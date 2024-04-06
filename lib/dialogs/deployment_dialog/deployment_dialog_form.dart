@@ -46,6 +46,8 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   bool _isDeploymentProcessActive = false;
 
   final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _deviceAddressTextEditingController = TextEditingController();
+
   final ScrollController _textFieldScrollController = ScrollController();
   final String _deploymentPath = kDebugMode ? AppPaths.debugDeploymentFolder : AppPaths.deploymentFolder;
 
@@ -53,6 +55,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
   void initState() {
     _device = widget.device;
     _checkConnection();
+    _deviceAddressTextEditingController.text = _device!.name;
     super.initState();
   }
 
@@ -222,6 +225,14 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
         padding: const EdgeInsets.only(bottom: 20),
         child: Column(
           children: [
+            TextFormField(
+              controller: _deviceAddressTextEditingController,
+              onSaved: (currentAddress) {},
+              decoration: const InputDecoration(labelText: 'Device DNS/IP address'),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
             buildPopupMenu(),
             SizedBox(
               width: 640,
@@ -326,9 +337,18 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     });
   }
 
+  String _getDeviceAddress() {
+    return _deviceAddressTextEditingController.text.isNotEmpty
+        ? _deviceAddressTextEditingController.text
+        : _device!.name;
+  }
+
   Future<void> _checkConnection() async {
-    await _startScriptProcess(
-        DeviceWebApps.webAny, ['$_deploymentPath/check_connection.ps1', '-ipaddr', _device!.name]);
+    await _startScriptProcess(DeviceWebApps.webAny, [
+      '$_deploymentPath/check_connection.ps1',
+      '-ipaddr',
+      _getDeviceAddress(),
+    ]);
   }
 
   Future<void> _checkDeploy({DeviceWebApps webApp = DeviceWebApps.webApi, bool clearLog = true}) async {
@@ -346,7 +366,8 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     try {
       var httpClient = getIt<AppHttpClientFactory>().httpClient;
 
-      var webApiResponse = await httpClient.get('http://${widget.device.name}:$webAppPort');
+      var webApiResponse = await httpClient.get(
+          'http://${_getDeviceAddress()}:$webAppPort');
 
       if (webApiResponse.statusCode == 200) {
         var response = webApiResponse.data;
@@ -400,7 +421,7 @@ class _DeploymentDialogFormState extends State<DeploymentDialogForm> {
     var args = [
       '$_deploymentPath/deploy_$appName.ps1',
       '-ipaddr',
-      _device!.name,
+      _getDeviceAddress(),
       '-root',
       _deploymentPath,
       '-distro',
